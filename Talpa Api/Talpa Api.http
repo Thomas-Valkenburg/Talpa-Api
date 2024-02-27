@@ -1,0 +1,6 @@
+@Talpa_Api_HostAddress = http://localhost:5008
+
+GET {{Talpa_Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
