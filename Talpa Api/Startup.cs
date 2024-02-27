@@ -15,7 +15,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddDbContext<UserContext>(options =>
         {
-            options.UseMySQL(Configuration.GetConnectionString("DBConnection") ?? throw new InvalidOperationException());
+            options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
         });
     }
 
