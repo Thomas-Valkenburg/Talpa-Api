@@ -11,6 +11,8 @@ public class Startup(IConfiguration configuration)
     {
         services.AddControllers();
 
+        services.AddSwaggerGen();
+
         services.AddDbContext<UserContext>(options =>
         {
             options.UseMySQL(Configuration.GetConnectionString("DBConnection") ?? throw new InvalidOperationException());
@@ -22,6 +24,8 @@ public class Startup(IConfiguration configuration)
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
