@@ -1,0 +1,38 @@
+﻿using Talpa_Api.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace Talpa_Api;
+
+public class Startup(IConfiguration configuration)
+{
+    private IConfiguration Configuration { get; } = configuration;
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers();
+
+        services.AddDbContext<UserContext>(options =>
+        {
+            options.UseMySQL(Configuration.GetConnectionString("DBConnection") ?? throw new InvalidOperationException());
+        });
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
+}
