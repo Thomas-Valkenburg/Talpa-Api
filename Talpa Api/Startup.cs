@@ -9,6 +9,8 @@ public class Startup(IConfiguration configuration)
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddSwaggerGen();
+        
         services.AddControllers();
 
         services.AddDbContext<UserContext>(options =>
@@ -22,6 +24,8 @@ public class Startup(IConfiguration configuration)
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
