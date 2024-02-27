@@ -9,9 +9,9 @@ public class Startup(IConfiguration configuration)
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSwaggerGen();
-        
         services.AddControllers();
+
+        services.AddSwaggerGen();
 
         services.AddDbContext<UserContext>(options =>
         {
