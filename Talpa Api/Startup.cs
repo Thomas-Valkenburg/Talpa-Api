@@ -1,5 +1,4 @@
-﻿using Talpa_Api.Context;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Talpa_Api;
 
@@ -13,7 +12,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddSwaggerGen();
 
-        services.AddDbContext<UserContext>(options =>
+        services.AddDbContext<Context>(options =>
         {
             options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
         });
