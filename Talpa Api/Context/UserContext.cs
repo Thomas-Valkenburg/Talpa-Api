@@ -1,9 +1,9 @@
-﻿using Talpa_Api.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Talpa_Api.Models;
 
 namespace Talpa_Api.Context;
 
 public class UserContext(DbContextOptions<UserContext> options) : DbContext(options)
 {
-    public DbSet<User> Users { get; init; } = null!;
+    public required DbSet<User> Users { get; init; }
 }

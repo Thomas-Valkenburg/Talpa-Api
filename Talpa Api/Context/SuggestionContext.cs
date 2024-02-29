@@ -5,5 +5,5 @@ namespace Talpa_Api.Context;
 
 public class SuggestionContext(DbContextOptions<SuggestionContext> options) : DbContext(options)
 {
-    public DbSet<Suggestion> Suggestions { get; init; } = null!;
+    public required DbSet<Suggestion> Suggestions { get; init; }
 }

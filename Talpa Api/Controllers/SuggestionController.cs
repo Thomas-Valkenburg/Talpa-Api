@@ -1,7 +1,7 @@
 ﻿using Talpa_Api.Context;
-using Talpa_Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talpa_Api.Models;
 
 namespace Talpa_Api.Controllers;
 

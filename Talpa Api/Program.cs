@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Context;
 
 namespace Talpa_Api;
@@ -14,8 +15,12 @@ public class Program
 
             try
             {
+                var suggestionContext = services.GetRequiredService<SuggestionContext>();
+                var teamContext = services.GetRequiredService<TeamContext>();
                 var userContext = services.GetRequiredService<UserContext>();
-                DbInitializer.Initialize(userContext);
+                var tagContext = services.GetRequiredService<TagContext>();
+                
+                EnsureDatabaseExists([suggestionContext, teamContext, userContext, tagContext]);
             }
             catch (Exception ex)
             {
@@ -38,6 +43,16 @@ public class Program
         }).ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<Startup>();
+        });
+    }
+
+    private static void EnsureDatabaseExists(List<DbContext> contexts)
+    {
+        contexts.ForEach(context =>
+        {
+            context.Database.EnsureCreated();
+
+            context.SaveChanges();
         });
     }
 }

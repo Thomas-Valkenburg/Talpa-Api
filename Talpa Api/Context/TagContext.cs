@@ -5,5 +5,5 @@ namespace Talpa_Api.Context;
 
 public class TagContext(DbContextOptions<TagContext> options) : DbContext(options)
 {
-    public DbSet<Tag> Tags { get; init; } = null!;
+    public required DbSet<Tag> Tags { get; init; }
 }

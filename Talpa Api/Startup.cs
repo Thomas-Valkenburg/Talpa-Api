@@ -13,7 +13,19 @@ public class Startup(IConfiguration configuration)
 
         services.AddSwaggerGen();
 
+        services.AddDbContext<SuggestionContext>(options =>
+        {
+            options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
+        });
         services.AddDbContext<UserContext>(options =>
+        {
+            options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
+        });
+        services.AddDbContext<TeamContext>(options =>
+        {
+            options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
+        });
+        services.AddDbContext<TagContext>(options =>
         {
             options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
         });

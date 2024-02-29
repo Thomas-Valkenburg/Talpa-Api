@@ -1,10 +1,16 @@
-﻿namespace Talpa_Api.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Talpa_Api.Models;
+
+[Table("User")]
 public class User
 {
-    public required int Id { get; set; }
+    [Key]
+    public required int Id { get; init; }
 
-    public required string Name { get; set; }
+    [MaxLength(255)]
+    public required string Name { get; init; }
 
-    public required bool IsManager { get; set; } = false;
+    public required bool IsManager { get; init; }
 }

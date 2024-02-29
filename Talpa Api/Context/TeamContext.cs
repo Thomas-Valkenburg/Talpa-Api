@@ -5,5 +5,5 @@ namespace Talpa_Api.Context;
 
 public class TeamContext(DbContextOptions<TeamContext> options) : DbContext(options)
 {
-    public DbSet<Team> Teams { get; init; } = null!;
+    public required DbSet<Team> Teams { get; init; }
 }
