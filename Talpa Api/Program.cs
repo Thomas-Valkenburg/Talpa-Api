@@ -14,7 +14,7 @@ public class Program
 
             try
             {
-                var context = services.GetRequiredService<Context.Context>();
+                var context = services.GetRequiredService<Context>();
                 
                 EnsureDatabaseExists([context]);
             }

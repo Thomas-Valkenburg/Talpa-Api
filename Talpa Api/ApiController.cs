@@ -1,13 +1,12 @@
-﻿using Talpa_Api.Context;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Models;
 
-namespace Talpa_Api.Controllers;
+namespace Talpa_Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SuggestionController(SuggestionContext context) : ControllerBase
+public class ApiController(Context context) : ControllerBase
 {
     // GET: api/Suggestions
     [HttpGet]

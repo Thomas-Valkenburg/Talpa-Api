@@ -12,7 +12,7 @@ public class Startup(IConfiguration configuration)
 
         services.AddSwaggerGen();
 
-        services.AddDbContext<Context.Context>(options =>
+        services.AddDbContext<Context>(options =>
         {
             options.UseMySQL(Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException());
         });
