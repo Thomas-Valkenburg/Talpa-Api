@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Models;
 
-namespace Talpa_Api;
+namespace Talpa_Api.Controllers;
+
+#if DEBUG
 
 [Route("api/[controller]")]
 [ApiController]
-public class ApiController(Context context) : ControllerBase
+public class TemplateController(Context context) : ControllerBase
 {
     // GET: api/Suggestions
     [HttpGet]
@@ -90,3 +92,5 @@ public class ApiController(Context context) : ControllerBase
         return context.Suggestions.Any(e => e.Id == id);
     }
 }
+
+#endif
