@@ -12,4 +12,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public required DbSet<Suggestion> Suggestions { get; init; }
 
     public required DbSet<Tag> Tags { get; init; }
+    
+    public required DbSet<Poll> Polls { get; init; }
+    
+    public required DbSet<Vote> Votes { get; init; }
 }

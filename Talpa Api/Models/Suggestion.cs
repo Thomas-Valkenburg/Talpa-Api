@@ -15,4 +15,6 @@ public class Suggestion
     public required string Title { get; init; }
 
     public required List<Tag>? Tags { get; init; }
+    
+    public required List<Poll> Polls { get; init; }
 }

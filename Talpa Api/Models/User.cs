@@ -13,4 +13,6 @@ public class User
     public required string Name { get; init; }
 
     public required bool IsManager { get; init; }
+    
+    public required List<Team>? Teams { get; init; }
 }

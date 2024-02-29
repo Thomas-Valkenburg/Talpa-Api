@@ -12,5 +12,5 @@ public class Team
     [MaxLength(255)]
     public required string Name { get; init; }
     
-    public required List<User>? Members { get; init; }
+    public required List<User>? Users { get; init; }
 }
