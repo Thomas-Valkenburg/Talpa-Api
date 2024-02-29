@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Talpa_Api.Context;
 
 namespace Talpa_Api;
 
@@ -15,12 +14,9 @@ public class Program
 
             try
             {
-                var suggestionContext = services.GetRequiredService<SuggestionContext>();
-                var teamContext = services.GetRequiredService<TeamContext>();
-                var userContext = services.GetRequiredService<UserContext>();
-                var tagContext = services.GetRequiredService<TagContext>();
+                var context = services.GetRequiredService<Context.Context>();
                 
-                EnsureDatabaseExists([suggestionContext, teamContext, userContext, tagContext]);
+                EnsureDatabaseExists([context]);
             }
             catch (Exception ex)
             {
