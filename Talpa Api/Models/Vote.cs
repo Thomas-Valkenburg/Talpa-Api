@@ -9,5 +9,5 @@ public class Vote
     [Key]
     public required int Id { get; init; }
     
-    public required User User { get; init; }
+    public required User Creator { get; init; }
 }
