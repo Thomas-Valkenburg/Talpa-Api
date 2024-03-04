@@ -14,7 +14,10 @@ public class TemplateController(Context context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Suggestion>>> GetSuggestions()
     {
-        return await context.Suggestions.ToListAsync();
+        return await context.Suggestions
+            .Include(suggestion => suggestion.Polls)
+            .Include(suggestion => suggestion.Tags)
+            .ToListAsync();
     }
 
     // GET: api/Suggestions/5
