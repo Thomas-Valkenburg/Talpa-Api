@@ -14,5 +14,5 @@ public class User
 
     public required bool IsManager { get; init; }
     
-    public required List<Team>? Teams { get; init; }
+    public required Team? Team { get; init; }
 }
