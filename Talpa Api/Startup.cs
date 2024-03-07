@@ -4,6 +4,11 @@ namespace Talpa_Api;
 
 public class Startup(IConfiguration configuration)
 {
+    
+    /*
+     * test comment
+     */
+    
     private IConfiguration Configuration { get; } = configuration;
 
     public void ConfigureServices(IServiceCollection services)
