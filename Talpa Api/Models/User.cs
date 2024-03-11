@@ -7,12 +7,12 @@ namespace Talpa_Api.Models;
 public class User
 {
     [Key]
-    public required int Id { get; init; }
+    public int Id { get; init; }
 
     [MaxLength(255)]
-    public required string Name { get; init; }
+    public string Name { get; init; }
 
-    public required bool IsManager { get; init; }
+    public bool IsManager { get; init; }
     
-    public required Team? Team { get; init; }
+    public virtual Team? Team { get; init; }
 }

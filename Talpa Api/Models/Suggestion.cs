@@ -7,16 +7,16 @@ namespace Talpa_Api.Models;
 public class Suggestion
 {
     [Key]
-    public required int Id { get; init; }
+    public int Id { get; init; }
 
-    public required User Creator { get; init; }
+    public virtual User Creator { get; init; }
 
     [MaxLength(255)]
-    public required string Title { get; init; }
+    public string Title { get; init; }
 
-    public required List<Tag>? Tags { get; init; }
+    public virtual List<Tag>? Tags { get; init; }
     
-    public required List<Poll>? Polls { get; init; }
+    public virtual List<Poll>? Polls { get; init; }
     
-    public required List<Vote>? Votes { get; init; }
+    public virtual List<Vote>? Votes { get; init; }
 }
