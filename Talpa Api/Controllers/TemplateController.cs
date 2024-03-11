@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
 namespace Talpa_Api.Controllers;
@@ -15,7 +16,6 @@ public class TemplateController(Context context) : ControllerBase
     public async Task<ActionResult<IEnumerable<Suggestion>>> GetSuggestions()
     {
         return await context.Suggestions
-            .Include(suggestion => suggestion.Polls)
             .Include(suggestion => suggestion.Tags)
             .ToListAsync();
     }
