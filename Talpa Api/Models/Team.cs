@@ -7,10 +7,10 @@ namespace Talpa_Api.Models;
 public class Team
 {
     [Key]
-    public int Id { get; init; }
+    public int Id { get; set; }
 
     [MaxLength(255)]
-    public string Name { get; init; }
-    
-    public virtual List<User>? Users { get; init; }
+    public string Name { get; set; }
+
+    public virtual List<User> Users { get; set; } = [];
 }
