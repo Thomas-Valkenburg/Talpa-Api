@@ -16,9 +16,7 @@ namespace Talpa_Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var connection = builder.Environment.IsDevelopment()
-                ? "Server=tcp:cgi-the-boys.database.windows.net,1433;Initial Catalog=cgi_the_boys;Persist Security Info=False;User ID=the_boys_admin;Password=Database123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-                : Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+            const string connection = "Server=tcp:cgi-the-boys.database.windows.net,1433;Initial Catalog=cgi_the_boys;Persist Security Info=False;User ID=the_boys_admin;Password=Database123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             
             Console.WriteLine($"connection: {connection}");
 

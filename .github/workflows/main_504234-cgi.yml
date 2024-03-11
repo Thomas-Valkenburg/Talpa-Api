@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
@@ -48,6 +49,58 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+=======
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - 504234-CGI
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.x'
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+>>>>>>> 381dbbd6010929ebefe653474f8ac1a9f634317a
       
       - name: Login to Azure
         uses: azure/login@v1
@@ -55,6 +108,7 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_88801E6F219341138BC73E62C35B7D30 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0E9C69F8AA8E4E5AAFB61A8144FB56C2 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4735F571C9AF4466AD51FA26C7689EC0 }}
+<<<<<<< HEAD
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -63,4 +117,14 @@ jobs:
           app-name: '504234-CGI'
           slot-name: 'Production'
           package: .
+=======
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: '504234-CGI'
+          slot-name: 'Production'
+          package: .
+>>>>>>> 381dbbd6010929ebefe653474f8ac1a9f634317a
           
