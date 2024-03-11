@@ -3,17 +3,22 @@ using Talpa_Api.Models;
 
 namespace Talpa_Api;
 
-public class Context(DbContextOptions<Context> options) : DbContext(options)
+public class Context : DbContext
 {
-    public required DbSet<Team> Teams { get; init; }
-
-    public required DbSet<User> Users { get; init; }
-
-    public required DbSet<Suggestion> Suggestions { get; init; }
-
-    public required DbSet<Tag> Tags { get; init; }
+    public Context(DbContextOptions<Context> options) : base(options)
+    {
+        Database.EnsureCreated();
+    }
     
-    public required DbSet<Poll> Polls { get; init; }
+    public virtual DbSet<Team> Teams { get; init; }
+
+    public virtual DbSet<User> Users { get; init; }
+
+    public virtual DbSet<Suggestion> Suggestions { get; init; }
+
+    public virtual DbSet<Tag> Tags { get; init; }
     
-    public required DbSet<Vote> Votes { get; init; }
+    public virtual DbSet<Poll> Polls { get; init; }
+    
+    public virtual DbSet<Vote> Votes { get; init; }
 }
