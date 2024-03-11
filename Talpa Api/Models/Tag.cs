@@ -12,9 +12,6 @@ public class Tag
     [MaxLength(255)]
     public required string Title { get; init; }
 
-    [MaxLength(255)]
-    public required string Description { get; init; }
-
     public required bool Restrictive { get; init; }
     
     public required List<Suggestion>? Suggestions { get; init; }
