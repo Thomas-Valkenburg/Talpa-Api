@@ -7,11 +7,11 @@ namespace Talpa_Api.Models;
 public class Vote
 {
     [Key]
-    public int Id { get; set; }
+    public required int Id { get; init; }
 
-    public virtual User Creator { get; set; }
+    public virtual required User Creator { get; init; }
     
-    public virtual Suggestion Suggestion { get; set; }
+    public virtual required Suggestion Suggestion { get; init; }
     
-    public virtual Poll Poll { get; set; }
+    public virtual required Poll Poll { get; init; }
 }

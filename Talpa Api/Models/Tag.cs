@@ -7,12 +7,12 @@ namespace Talpa_Api.Models;
 public class Tag
 {
     [Key]
-    public int Id { get; set; }
+    public required int Id { get; init; }
 
     [MaxLength(255)]
-    public string Title { get; set; }
+    public required string Title { get; init; }
 
-    public bool Restrictive { get; set; }
-    
-    public virtual List<Suggestion>? Suggestions { get; set; }
+    public required bool Restrictive { get; init; }
+
+    public virtual List<Suggestion> Suggestions { get; init; } = [];
 }
