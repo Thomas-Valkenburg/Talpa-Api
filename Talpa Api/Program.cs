@@ -21,7 +21,10 @@ namespace Talpa_Api
             Console.WriteLine($"connection: {connection}");
 
             builder.Services.AddDbContext<Context>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlServer(connection, option =>
+                {
+                    option.EnableRetryOnFailure(2);
+                }));
             
 
             var app = builder.Build();
