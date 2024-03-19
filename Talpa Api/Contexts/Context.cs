@@ -18,15 +18,24 @@ public class Context : DbContext
 
     public virtual DbSet<Tag> Tags { get; set; }
 
-    //public virtual DbSet<Poll> Polls { get; set; }
+    public virtual DbSet<Poll> Polls { get; set; }
 
     public virtual DbSet<Vote> Votes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Suggestion>()
-            .HasOne(p => p.Creator)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(s => s.Tags)
+            .WithMany(t => t.Suggestions);
+
+        modelBuilder.Entity<Suggestion>()
+            .HasMany(s => s.Polls)
+            .WithMany(p => p.Suggestions);
+        
+        modelBuilder.Entity<Team>()
+            .HasOne(t => t.Poll)
+            .WithOne(p => p.Team)
+            .HasForeignKey<Poll>()
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

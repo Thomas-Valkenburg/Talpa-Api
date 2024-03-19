@@ -7,13 +7,14 @@ namespace Talpa_Api.Models;
 public class Poll
 {
     [Key]
-    public int Id { get; set; }
-    
-    public DateOnly EndDateTime { get; set; }
-    
-    public virtual Team Team { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; init; }
 
-    public virtual List<Suggestion> Suggestions { get; set; } = [];
+    public DateOnly EndDateTime { get; init; }
 
-    public virtual List<Vote> Votes { get; set; } = [];
+    public virtual required Team Team { get; init; }
+
+    public virtual List<Suggestion> Suggestions { get; init; } = [];
+
+    public virtual List<Vote> Votes { get; init; } = [];
 }

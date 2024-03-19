@@ -11,10 +11,32 @@ public class ApiController(Context context) : ControllerBase
 {
     // GET: api/GetUser
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public ActionResult<User> GetUser(int id)
     {
-        var user = await context.Users.FindAsync(id);
+        var user = context.Users.Find(id);
 
         return user == null ? NotFound() : user;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateSuggestion(string title, string description, int creatorId)
+    {
+        var user = await context.Users.FindAsync(creatorId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        user.Suggestions.Add(new Suggestion
+        {
+            Title = title,
+            Description = description,
+            Creator = user
+        });
+
+        await context.SaveChangesAsync();
+
+        return NoContent();
     }
 }
