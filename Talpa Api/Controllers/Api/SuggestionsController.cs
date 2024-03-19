@@ -32,15 +32,15 @@ namespace Talpa_Api.Controllers.Api
         
         private double CalculateSimilarityPercentage(string string1, string string2)
         {
-            List<string> pairs1 = WordLetterPairs(string1.ToUpper());
-            List<string> pairs2 = WordLetterPairs(string2.ToUpper());
+            var pairs1 = WordLetterPairs(string1.ToUpper());
+            var pairs2 = WordLetterPairs(string2.ToUpper());
 
-            int intersection = 0;
-            int union        = pairs1.Count + pairs2.Count;
+            var intersection = 0;
+            var union        = pairs1.Count + pairs2.Count;
 
             foreach (var pair1 in pairs1)
             {
-                for (int number = 0; number < pairs2.Count; number++)
+                for (var number = 0; number < pairs2.Count; number++)
                 {
                     if (pair1 == pairs2[number])
                     {
@@ -58,12 +58,12 @@ namespace Talpa_Api.Controllers.Api
         // Required for the CalculateSimilarityPercentage method.
         private List<string> WordLetterPairs(string str)
         {
-            List<string> allPairs = new List<string>();
-            string[]     words    = str.Split(' ');
+            var allPairs = new List<string>();
+            var     words    = str.Split(' ');
 
-            foreach (string word in words)
+            foreach (var word in words)
             {
-                for (int number = 0; number < word.Length - 1; number++)
+                for (var number = 0; number < word.Length - 1; number++)
                 {
                     allPairs.Add(word.Substring(number, 2));
                 }
