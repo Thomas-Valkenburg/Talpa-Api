@@ -13,8 +13,8 @@
     <AssociationLine Name="Votes" Type="Talpa_Api.Models.Vote" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="7.25" Y="3.5" />
-        <Point X="7.25" Y="0.875" />
-        <Point X="5" Y="0.875" />
+        <Point X="7.25" Y="0.819" />
+        <Point X="5" Y="0.819" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -33,8 +33,8 @@
     <Position X="3.5" Y="3.5" Width="1.75" />
     <AssociationLine Name="Creator" Type="Talpa_Api.Models.User" FixedToPoint="true">
       <Path>
-        <Point X="3.5" Y="4.25" />
-        <Point X="2" Y="4.25" />
+        <Point X="3.5" Y="4.312" />
+        <Point X="2" Y="4.312" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="Tags" Type="Talpa_Api.Models.Tag" FixedToPoint="true">
@@ -105,8 +105,8 @@
       <Path>
         <Point X="2" Y="3.75" />
         <Point X="2.623" Y="3.75" />
-        <Point X="2.623" Y="0.875" />
-        <Point X="3.5" Y="0.875" />
+        <Point X="2.623" Y="0.819" />
+        <Point X="3.5" Y="0.819" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="Suggestions" Type="Talpa_Api.Models.Suggestion" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
@@ -133,18 +133,27 @@
     <Position X="3.5" Y="0.5" Width="1.5" />
     <AssociationLine Name="Poll" Type="Talpa_Api.Models.Poll" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5" Y="1.062" />
-        <Point X="7.062" Y="1.062" />
+        <Point X="5" Y="0.979" />
+        <Point X="7.062" Y="0.979" />
         <Point X="7.062" Y="3.5" />
       </Path>
     </AssociationLine>
+    <AssociationLine Name="Creator" Type="Talpa_Api.Models.User" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.5" Y="1.243" />
+        <Point X="3.125" Y="1.243" />
+        <Point X="3.125" Y="4.062" />
+        <Point X="2" Y="4.062" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAACAAAEAAAAAAAgAA=</HashCode>
       <FileName>Models\Vote.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Suggestion" />
       <Property Name="Poll" />
+      <Property Name="Creator" />
     </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />

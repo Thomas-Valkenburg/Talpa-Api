@@ -10,7 +10,7 @@ public class Vote
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
 
-    public virtual required User CreatorId { get; init; }
+    public virtual required User Creator { get; init; }
 
     public virtual required Suggestion Suggestion { get; init; }
 
