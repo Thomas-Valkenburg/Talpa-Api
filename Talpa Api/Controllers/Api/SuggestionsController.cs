@@ -42,7 +42,7 @@ namespace Talpa_Api.Controllers.Api
             {
                 for (var number = 0; number < pairs2.Count; number++)
                 {
-                    if (pair1 == pairs2[number])
+                    if (pair1 != pairs2[number]) continue;
                     {
                         intersection++;
                         pairs2.RemoveAt(number);
