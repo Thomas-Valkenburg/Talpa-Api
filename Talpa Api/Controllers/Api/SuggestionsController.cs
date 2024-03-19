@@ -43,16 +43,15 @@ namespace Talpa_Api.Controllers.Api
                 for (var number = 0; number < pairs2.Count; number++)
                 {
                     if (pair1 != pairs2[number]) continue;
-                    {
-                        intersection++;
-                        pairs2.RemoveAt(number);
-                        break;
-                    }
+                    
+                    intersection++;
+                    pairs2.RemoveAt(number);
+                    break;
                 }
             }
 
             // return the percentage of similarity
-            return (2.0 * intersection * 100) / union;
+            return 2.0 * intersection * 100 / union;
         }
 
         // Required for the CalculateSimilarityPercentage method.
