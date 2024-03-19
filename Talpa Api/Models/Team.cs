@@ -7,10 +7,14 @@ namespace Talpa_Api.Models;
 public class Team
 {
     [Key]
-    public required int Id { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; init; }
 
     [MaxLength(255)]
-    public required string Name { get; set; }
+    public string Name { get; set; }
+
+    public virtual Poll? Poll { get; set; }
 
     public virtual List<User> Users { get; init; } = [];
+
 }

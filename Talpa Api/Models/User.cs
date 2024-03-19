@@ -7,16 +7,17 @@ namespace Talpa_Api.Models;
 public class User
 {
     [Key]
-    public required int Id { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; init; }
 
     [MaxLength(255)]
-    public required string Name { get; init; }
+    public string Name { get; init; }
 
-    public required bool IsManager { get; init; }
+    public bool IsManager { get; init; }
     
-    public virtual required Team Team { get; init; }
-    
+    public virtual Team Team { get; init; }
+
     public virtual List<Vote> Votes { get; init; } = [];
-    
+
     public virtual List<Suggestion> Suggestions { get; init; } = [];
 }
