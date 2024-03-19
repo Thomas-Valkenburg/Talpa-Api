@@ -19,9 +19,22 @@ public class ApiController(Context context) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser()
+    public async Task<IActionResult> CreateSuggestion(string title, string description, int creatorId)
     {
-        context.Users.Add(new User {Id = 0, IsManager = true, Name = "test", Team = new Team {Id = 0, Name = "test"}});
+        var user = await context.Users.FindAsync(creatorId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        user.Suggestions.Add(new Suggestion
+        {
+            Title = title,
+            Description = description,
+            Creator = user
+        });
+
         await context.SaveChangesAsync();
 
         return NoContent();
