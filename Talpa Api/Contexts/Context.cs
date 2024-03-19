@@ -10,17 +10,17 @@ public class Context : DbContext
         Database.EnsureCreated();
     }
 
-    public virtual DbSet<Team> Teams { get; set; }
+    public virtual DbSet<Team> Teams { get; init; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<User> Users { get; init; }
 
-    public virtual DbSet<Suggestion> Suggestions { get; set; }
+    public virtual DbSet<Suggestion> Suggestions { get; init; }
 
-    public virtual DbSet<Tag> Tags { get; set; }
+    public virtual DbSet<Tag> Tags { get; init; }
 
-    public virtual DbSet<Poll> Polls { get; set; }
+    public virtual DbSet<Poll> Polls { get; init; }
 
-    public virtual DbSet<Vote> Votes { get; set; }
+    public virtual DbSet<Vote> Votes { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
