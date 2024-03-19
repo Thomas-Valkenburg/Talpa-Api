@@ -11,7 +11,7 @@ public class Team
     public int Id { get; init; }
 
     [MaxLength(255)]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public virtual Poll? Poll { get; set; }
 

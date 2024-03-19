@@ -11,9 +11,9 @@ public class Tag
     public int Id { get; init; }
 
     [MaxLength(255)]
-    public string Title { get; init; }
+    public required string Title { get; init; }
 
-    public bool Restrictive { get; init; }
+    public required bool Restrictive { get; init; }
 
     public virtual List<Suggestion> Suggestions { get; init; } = [];
 }

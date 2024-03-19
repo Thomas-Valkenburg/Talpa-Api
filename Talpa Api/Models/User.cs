@@ -11,11 +11,11 @@ public class User
     public int Id { get; init; }
 
     [MaxLength(255)]
-    public string Name { get; init; }
+    public required string Name { get; init; }
 
-    public bool IsManager { get; init; }
+    public required bool IsManager { get; init; }
     
-    public virtual Team Team { get; init; }
+    public virtual required Team Team { get; init; }
 
     public virtual List<Vote> Votes { get; init; } = [];
 
