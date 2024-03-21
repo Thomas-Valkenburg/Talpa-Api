@@ -13,8 +13,8 @@
     <AssociationLine Name="Votes" Type="Talpa_Api.Models.Vote" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="7.25" Y="3.5" />
-        <Point X="7.25" Y="0.819" />
-        <Point X="5" Y="0.819" />
+        <Point X="7.25" Y="0.875" />
+        <Point X="5" Y="0.875" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -33,8 +33,8 @@
     <Position X="3.5" Y="3.5" Width="1.75" />
     <AssociationLine Name="Creator" Type="Talpa_Api.Models.User" FixedToPoint="true">
       <Path>
-        <Point X="3.5" Y="4.312" />
-        <Point X="2" Y="4.312" />
+        <Point X="3.5" Y="4.25" />
+        <Point X="2" Y="4.25" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="Tags" Type="Talpa_Api.Models.Tag" FixedToPoint="true">
@@ -117,6 +117,14 @@
         <Point X="3.5" Y="4.625" />
       </Path>
     </AssociationLine>
+    <AssociationLine Name="Suggestions" Type="Talpa_Api.Models.Suggestion" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2" Y="4.625" />
+        <Point X="2.75" Y="4.625" />
+        <Point X="2.75" Y="4.625" />
+        <Point X="3.5" Y="4.625" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>ACQCAAAAAAAgAAAAAAAAAAQAAAAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>Models\User.cs</FileName>
@@ -147,7 +155,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAACAAAEAAAAAAAgAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAgAA=</HashCode>
       <FileName>Models\Vote.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
