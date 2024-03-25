@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
@@ -8,6 +9,16 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class SuggestionsController(Context context) : ControllerBase
     {
+        [HttpGet]
+        public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
+        {
+            return await context.Suggestions
+                .AsNoTracking()
+                .Include(x => x.Creator)
+                .Include(x => x.Tags)
+                .ToListAsync();
+        }
+        
         [HttpPost]
         public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId)
         {
