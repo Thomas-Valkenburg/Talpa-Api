@@ -18,7 +18,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>ACQKAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <HashCode>ACQCAAAAAAAAAAAAAAAAAAAgAAAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>Models\Poll.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -105,8 +105,16 @@
       <Path>
         <Point X="2" Y="3.75" />
         <Point X="2.623" Y="3.75" />
-        <Point X="2.623" Y="0.875" />
-        <Point X="3.5" Y="0.875" />
+        <Point X="2.623" Y="0.819" />
+        <Point X="3.5" Y="0.819" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Suggestions" Type="Talpa_Api.Models.Suggestion" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2" Y="4.625" />
+        <Point X="2.75" Y="4.625" />
+        <Point X="2.75" Y="4.625" />
+        <Point X="3.5" Y="4.625" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="Suggestions" Type="Talpa_Api.Models.Suggestion" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
@@ -133,9 +141,17 @@
     <Position X="3.5" Y="0.5" Width="1.5" />
     <AssociationLine Name="Poll" Type="Talpa_Api.Models.Poll" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5" Y="1.062" />
-        <Point X="7.062" Y="1.062" />
+        <Point X="5" Y="0.979" />
+        <Point X="7.062" Y="0.979" />
         <Point X="7.062" Y="3.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Creator" Type="Talpa_Api.Models.User" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.5" Y="1.243" />
+        <Point X="3.125" Y="1.243" />
+        <Point X="3.125" Y="4.062" />
+        <Point X="2" Y="4.062" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -145,6 +161,7 @@
     <ShowAsAssociation>
       <Property Name="Suggestion" />
       <Property Name="Poll" />
+      <Property Name="Creator" />
     </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />
