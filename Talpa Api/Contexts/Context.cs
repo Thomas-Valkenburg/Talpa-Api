@@ -36,6 +36,6 @@ public class Context : DbContext
             .HasOne(t => t.Poll)
             .WithOne(p => p.Team)
             .HasForeignKey<Poll>()
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
