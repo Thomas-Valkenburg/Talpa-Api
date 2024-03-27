@@ -38,4 +38,9 @@ public class Context : DbContext
             .HasForeignKey<Poll>()
             .OnDelete(DeleteBehavior.NoAction);
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
 }
