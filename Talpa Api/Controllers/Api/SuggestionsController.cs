@@ -24,10 +24,7 @@ namespace Talpa_Api.Controllers.Api
         {
             var user = await context.Users.FindAsync(creatorId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
 
             user.Suggestions.Add(new Suggestion
             {
@@ -35,6 +32,20 @@ namespace Talpa_Api.Controllers.Api
                 Description = description,
                 Creator     = user
             });
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> ChangeSuggestion(int id, string description)
+        {
+            var suggestion = await context.Suggestions.FindAsync(id);
+
+            if (suggestion == null) return NotFound();
+
+            suggestion.Description = description;
 
             await context.SaveChangesAsync();
 
