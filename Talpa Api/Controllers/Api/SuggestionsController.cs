@@ -13,7 +13,6 @@ namespace Talpa_Api.Controllers.Api
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
         {
             return await context.Suggestions
-                .AsNoTracking()
                 .Include(x => x.Creator)
                 .Include(x => x.Tags)
                 .ToListAsync();

@@ -16,9 +16,8 @@ public class TemplateController(Context context) : ControllerBase
     public async Task<ActionResult<IEnumerable<Suggestion>>> GetSuggestions()
     {
         return await context.Suggestions
-            .AsNoTracking() // Don't include classes that are not 'Included'.
             .Include(suggestion => suggestion.Creator) // Include the creator of the suggestion.
-            .ThenInclude(user => user.Team) // Include the team of the creator of the suggestion.
+            .ThenInclude(creator => creator.Team) // Include the team of the creator of the suggestion.
             .Include(suggestion => suggestion.Tags) // Include the tags of the suggestion.
             .ToListAsync();
     }
