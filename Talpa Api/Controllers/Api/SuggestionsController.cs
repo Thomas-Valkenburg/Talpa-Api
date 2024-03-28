@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
@@ -8,15 +9,21 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class SuggestionsController(Context context) : ControllerBase
     {
+        [HttpGet]
+        public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
+        {
+            return await context.Suggestions
+                .Include(x => x.Creator)
+                .Include(x => x.Tags)
+                .ToListAsync();
+        }
+        
         [HttpPost]
         public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId)
         {
             var user = await context.Users.FindAsync(creatorId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
 
             user.Suggestions.Add(new Suggestion
             {
@@ -24,6 +31,20 @@ namespace Talpa_Api.Controllers.Api
                 Description = description,
                 Creator     = user
             });
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> ChangeSuggestion(int id, string description)
+        {
+            var suggestion = await context.Suggestions.FindAsync(id);
+
+            if (suggestion == null) return NotFound();
+
+            suggestion.Description = description;
 
             await context.SaveChangesAsync();
 

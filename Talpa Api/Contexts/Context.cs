@@ -36,6 +36,11 @@ public class Context : DbContext
             .HasOne(t => t.Poll)
             .WithOne(p => p.Team)
             .HasForeignKey<Poll>()
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
     }
 }

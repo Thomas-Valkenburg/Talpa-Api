@@ -12,7 +12,7 @@ public class Vote
 
     public virtual required User Creator { get; init; }
 
-    public virtual required Suggestion Suggestion { get; init; }
+    public virtual required Suggestion Suggestion { get; set; }
 
     public virtual required Poll Poll { get; init; }
 }
