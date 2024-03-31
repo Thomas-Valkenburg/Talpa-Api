@@ -79,7 +79,7 @@ namespace Talpa_Api.Controllers.Api
             
             if (user.Votes.Any(x => x.Poll.Id == pollId)) return BadRequest("User already voted in this poll");
             
-            context.Votes.Add(new Vote
+            await context.Votes.AddAsync(new Vote
             {
                 Creator = user,
                 Poll = poll,
