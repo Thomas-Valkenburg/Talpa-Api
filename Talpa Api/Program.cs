@@ -48,6 +48,7 @@ namespace Talpa_Api
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 

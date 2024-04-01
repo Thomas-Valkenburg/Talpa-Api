@@ -10,9 +10,14 @@ public class Suggestion
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
 
-    [MaxLength(255)] public required string Title { get; init; }
+    [StringLength(255)] 
+    public required string Title { get; init; }
 
-    [MaxLength(1000)] public required string Description { get; set; }
+    [StringLength(1000)] 
+    public required string Description { get; set; }
+
+    [StringLength(255)] 
+    public required string ImagePath { get; set; }
 
     public virtual required User? Creator { get; init; }
 
