@@ -9,6 +9,8 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class SuggestionsController(Context context) : ControllerBase
     {
+        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
+
         [HttpGet]
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
         {
@@ -40,40 +42,18 @@ namespace Talpa_Api.Controllers.Api
                 }
             }
 
-            user.Suggestions.Add(new Suggestion
+            context.Suggestions.Add(new Suggestion
             {
                 Title       = title,
                 Description = description,
-                Creator     = user,
-                ImagePath   = imagePath
+                ImagePath   = imagePath,
+                Creator     = user
             });
             
 
             await context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private async Task<string> SaveImage(IFormFile image)
-        {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-            if (string.IsNullOrEmpty(extension) || !allowedExtensions.Contains(extension) || image.Length > 3 * 1024 * 1024)
-            {
-                return null;
-            }
-
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var path = Path.Combine("wwwroot", "images", fileName);
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await image.CopyToAsync(stream);
-            }
-
-            return Path.Combine("images", fileName);
         }
 
         [HttpPut]
@@ -89,7 +69,28 @@ namespace Talpa_Api.Controllers.Api
 
             return NoContent();
         }
-        
+
+        private static async Task<string?> SaveImage(IFormFile image)
+        {
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension) ||
+                image.Length > 3 * 1024 * 1024)
+            {
+                return null;
+            }
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var path     = Path.Combine("wwwroot", "images", fileName);
+
+            await using var stream = new FileStream(path, FileMode.Create);
+
+            await image.CopyToAsync(stream);
+
+
+            return Path.Combine("images", fileName);
+        }
+
         private double CalculateSimilarityPercentage(string string1, string string2)
         {
             var pairs1 = WordLetterPairs(string1.ToUpper());
