@@ -20,7 +20,9 @@ namespace Talpa_Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            const string connection = "Server=tcp:cgi-the-boys.database.windows.net,1433;Initial Catalog=cgi_the_boys;Persist Security Info=False;User ID=the_boys_admin;Password=Database123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false);
+            
+            var connection = builder.Configuration.GetConnectionString("ConnectionString");
             
             Console.WriteLine($"connection: {connection}");
 
@@ -46,6 +48,7 @@ namespace Talpa_Api
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 

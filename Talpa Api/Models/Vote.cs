@@ -16,3 +16,9 @@ public class Vote
 
     public virtual required Poll Poll { get; init; }
 }
+
+public struct VotesWithCount
+{
+    public List<Vote> Votes { get; set; }
+    public Dictionary<int, int> VotesPerSuggestion { get; set; }
+}
