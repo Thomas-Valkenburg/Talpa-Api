@@ -9,7 +9,7 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class SuggestionsController(Context context) : ControllerBase
     {
-        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
+        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
         [HttpGet]
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
@@ -30,7 +30,7 @@ namespace Talpa_Api.Controllers.Api
                 return NotFound();
             }
 
-            var imagePath = "images\\default.png";
+            var imagePath = "images/default.png";
 
             if (image != null)
             {
