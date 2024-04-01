@@ -28,33 +28,26 @@ namespace Talpa_Api.Controllers.Api
                 return NotFound();
             }
 
+            var imagePath = "images/default.png";
+
             if (image != null)
             {
-                var imagePath = await SaveImage(image);
+                imagePath = await SaveImage(image);
 
                 if (string.IsNullOrEmpty(imagePath))
                 {
                     return BadRequest("Invalid image file.");
                 }
+            }
 
-                user.Suggestions.Add(new Suggestion
-                {
-                    Title       = title,
-                    Description = description,
-                    Creator     = user,
-                    ImagePath   = imagePath
-                });
-            }
-            else
+            user.Suggestions.Add(new Suggestion
             {
-                user.Suggestions.Add(new Suggestion
-                {
-                    Title       = title,
-                    Description = description,
-                    Creator     = user,
-                    ImagePath   = "images/default.png"
-                });
-            }
+                Title       = title,
+                Description = description,
+                Creator     = user,
+                ImagePath   = imagePath
+            });
+            
 
             await context.SaveChangesAsync();
 
