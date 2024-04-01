@@ -19,22 +19,68 @@ namespace Talpa_Api.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId)
+        public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId, IFormFile? image)
         {
             var user = await context.Users.FindAsync(creatorId);
 
-            if (user == null) return NotFound();
-
-            user.Suggestions.Add(new Suggestion
+            if (user == null)
             {
-                Title       = title,
-                Description = description,
-                Creator     = user
-            });
+                return NotFound();
+            }
+
+            if (image != null)
+            {
+                var imagePath = await SaveImage(image);
+
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    return BadRequest("Invalid image file.");
+                }
+
+                user.Suggestions.Add(new Suggestion
+                {
+                    Title       = title,
+                    Description = description,
+                    Creator     = user,
+                    ImagePath   = imagePath
+                });
+            }
+            else
+            {
+                user.Suggestions.Add(new Suggestion
+                {
+                    Title       = title,
+                    Description = description,
+                    Creator     = user,
+                    ImagePath   = "images/default.png"
+                });
+            }
 
             await context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private async Task<string> SaveImage(IFormFile image)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(extension) || !allowedExtensions.Contains(extension) || image.Length > 3 * 1024 * 1024)
+            {
+                return null;
+            }
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var path = Path.Combine("wwwroot", "images", fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return Path.Combine("images", fileName);
         }
 
         [HttpPut]
