@@ -9,7 +9,7 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class SuggestionsController(Context context) : ControllerBase
     {
-        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
+        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
         [HttpGet]
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
