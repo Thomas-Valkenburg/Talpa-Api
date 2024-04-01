@@ -30,7 +30,7 @@ namespace Talpa_Api.Controllers.Api
                 return NotFound();
             }
 
-            var imagePath = "images/default.png";
+            var imagePath = "images\\default.png";
 
             if (image != null)
             {
