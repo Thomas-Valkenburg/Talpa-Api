@@ -18,11 +18,14 @@ jobs:
         with: 
           dotnet-version: '8.x'
 
+      - name: Restore
+        run: dotnet restore
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./Release
+        run: dotnet publish -c Release -o ./Release --runtime win-x64
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
