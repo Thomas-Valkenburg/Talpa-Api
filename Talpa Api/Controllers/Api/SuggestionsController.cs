@@ -10,7 +10,7 @@ namespace Talpa_Api.Controllers.Api
     public class SuggestionsController(Context context) : ControllerBase
     {
         private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
-
+        
         [HttpGet]
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
         {
@@ -24,12 +24,12 @@ namespace Talpa_Api.Controllers.Api
         public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, int creatorId, IFormFile? image, bool checkSimilarity)
         {
             var user = await context.Users.FindAsync(creatorId);
-
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
+            
             var imagePath = "images/default.png";
 
             if (image != null)
@@ -37,9 +37,7 @@ namespace Talpa_Api.Controllers.Api
                 imagePath = await SaveImage(image);
 
                 if (string.IsNullOrEmpty(imagePath))
-                {
                     return BadRequest("Invalid image file.");
-                }
             }
             
             
@@ -64,7 +62,7 @@ namespace Talpa_Api.Controllers.Api
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Created();
         }
 
         [HttpPut]
@@ -78,7 +76,7 @@ namespace Talpa_Api.Controllers.Api
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Created();
         }
 
         private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
