@@ -10,23 +10,6 @@ namespace Talpa_Api.Controllers.Api
     [ApiController]
     public class VotesController(Context context) : ControllerBase
     {
-        /*
-        [HttpGet]
-        public async Task<ActionResult<List<Vote>>> GetVotesFromPollId(int pollId)
-        {
-            var polls = await context.Polls
-                .Where(x => x.Id == pollId)
-                .Include(poll => poll.Votes)
-                .ThenInclude(x => x.Creator)
-                .Include(x => x.Votes)
-                .ThenInclude(x => x.Suggestion)
-                .ToListAsync();
-
-            if (polls.Count != 1) return NotFound();
-
-            return polls.First().Votes;
-        }
-        */
         
         [HttpGet]
         public async Task<ActionResult<VotesWithCount>> GetVotesFromPollId(int pollId)
@@ -39,7 +22,7 @@ namespace Talpa_Api.Controllers.Api
                 .ThenInclude(x => x.Suggestion)
                 .ToListAsync();
 
-            if (polls.Count != 1) return NotFound();
+            if (polls.Count < 1) return NotFound("poll not found");
 
             var votes = polls.First().Votes;
 
@@ -54,11 +37,11 @@ namespace Talpa_Api.Controllers.Api
                 }
             }
 
-            return new VotesWithCount
+            return Ok(new VotesWithCount
             {
                 Votes = votes,
                 VotesPerSuggestion = votesPerSuggestion
-            };
+            });
         }
 
         [HttpPost]
@@ -74,8 +57,9 @@ namespace Talpa_Api.Controllers.Api
             
             var suggestion = await context.Suggestions.FindAsync(suggestionId);
             
-            if (user == null || poll == null || suggestion == null) return NotFound();
-            
+            if (user == null) return NotFound("User not found");
+            if (poll == null) return NotFound("Poll not found");
+            if (suggestion == null) return NotFound("Suggestions not found");
             
             if (user.Votes.Any(x => x.Poll.Id == pollId)) return BadRequest("User already voted in this poll");
             
@@ -88,7 +72,7 @@ namespace Talpa_Api.Controllers.Api
             
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Created();
         }
 
         [HttpDelete]
@@ -96,13 +80,13 @@ namespace Talpa_Api.Controllers.Api
         {
             var vote = await context.Votes.FindAsync(voteId);
         
-            if (vote == null) return NotFound();
+            if (vote == null) return NotFound("Vote not found");
             
             context.Votes.Remove(vote);
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }
