@@ -38,3 +38,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           local-dir: ./Release/
           server-dir: /domains/grpi528512.luna.fhict.nl/
+          dangerous-clean-slate: true
