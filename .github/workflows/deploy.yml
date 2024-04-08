@@ -45,5 +45,5 @@ jobs:
           port: 21
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          local-dir: ${{ env.DOTNET_ROOT }}/myapp
+          local-dir: ${{ env.DOTNET_ROOT }}/myapp/
           server-dir: /domains//grpi528512.luna.fhict.nl/
