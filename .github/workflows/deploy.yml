@@ -37,4 +37,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           local-dir: ./Release/
-          server-dir: /domains//grpi528512.luna.fhict.nl/
+          server-dir: /domains/grpi528512.luna.fhict.nl/
