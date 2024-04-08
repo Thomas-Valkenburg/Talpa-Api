@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@v4
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@latest
+        uses: actions/setup-dotnet@v4
         with: 
           dotnet-version: '8.x'
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: FTP Deploy
         if: github.ref == 'refs/heads/main'
-        uses: SamKirkland/FTP-Deploy-Action@latest
+        uses: SamKirkland/FTP-Deploy-Action@v4
         with:
           server: ${{ vars.SERVER }}
           protocol: ftps
