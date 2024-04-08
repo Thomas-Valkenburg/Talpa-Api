@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with: 
           dotnet-version: '8.x'
 
@@ -29,14 +29,7 @@ jobs:
         with:
           name: .net-app
           path: ./Release
-
-  web-deploy:
-    name: Deploy
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-      - name: 📂 Sync files
+      - name: FTP Deploy
         if: github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
