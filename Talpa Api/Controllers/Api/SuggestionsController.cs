@@ -21,7 +21,7 @@ namespace Talpa_Api.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId, IFormFile? image)
+        public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, int creatorId, IFormFile? image, bool checkSimilarity)
         {
             var user = await context.Users.FindAsync(creatorId);
 
@@ -41,7 +41,18 @@ namespace Talpa_Api.Controllers.Api
                     return BadRequest("Invalid image file.");
                 }
             }
+            
+            
+            var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
 
+
+            if (checkSimilarity && suggestionsWithSimilarity.Count > 0) 
+                return suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList();
+
+            if (maxSimilarity >= 95)
+                return BadRequest("Suggestion is too similar to existing suggestions.");
+            
+            
             context.Suggestions.Add(new Suggestion
             {
                 Title       = title,
@@ -68,6 +79,23 @@ namespace Talpa_Api.Controllers.Api
             await context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
+        {
+            var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
+            var maxSimilarity = 0.0;
+            
+            foreach (var sug in context.Suggestions)
+            {
+                var sim = CalculateSimilarityPercentage(sug.Title, title);
+                
+                if (sim > maxSimilarity) maxSimilarity = sim;
+                
+                if (sim > 50) suggestionsWithSimilarity.Add(new SuggestionWithSimilarity(sug.Id, sug.Title, sim));
+            }
+            
+            return (suggestionsWithSimilarity, maxSimilarity);
         }
 
         private static async Task<string?> SaveImage(IFormFile image)
