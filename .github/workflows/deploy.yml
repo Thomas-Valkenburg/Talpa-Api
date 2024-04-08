@@ -22,13 +22,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
+        run: dotnet publish -c Release -o ./Release
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{ env.DOTNET_ROOT }}/myapp
+          path: ./Release
 
   web-deploy:
     name: Deploy
@@ -45,5 +45,5 @@ jobs:
           port: 21
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          local-dir: ./Talpa Api/bin/Release/net8.0/
+          local-dir: ./Release/
           server-dir: /domains//grpi528512.luna.fhict.nl/
