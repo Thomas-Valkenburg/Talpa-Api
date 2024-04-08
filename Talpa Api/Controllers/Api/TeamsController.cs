@@ -13,9 +13,9 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
         
-        if (team == null) return NotFound();
+        if (team == null) return NotFound("Team not found");
 
-        return team;
+        return Ok(team);
     }
 
     [HttpPost]
@@ -28,7 +28,7 @@ public class TeamsController(Context context) : ControllerBase
 
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return Created();
     }
 
     [HttpPut]
@@ -36,11 +36,11 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
 
-        if (team == null) return NotFound();
+        if (team == null) return NotFound("Team not found");
         
         team.Name = name;
 
-        return NoContent();
+        return Created();
     }
 
     [HttpDelete]
@@ -48,12 +48,12 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
 
-        if (team == null) return NotFound();
+        if (team == null) return NotFound("Team not found");
 
         context.Teams.Remove(team);
         
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
     }
 }
