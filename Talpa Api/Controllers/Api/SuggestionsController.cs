@@ -79,6 +79,27 @@ namespace Talpa_Api.Controllers.Api
             return Created();
         }
 
+        private static async Task<string?> SaveImage(IFormFile image)
+        {
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension) ||
+                image.Length > 3 * 1024 * 1024)
+            {
+                return null;
+            }
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var path = Path.Combine("wwwroot", "images", fileName);
+
+            await using var stream = new FileStream(path, FileMode.Create);
+
+            await image.CopyToAsync(stream);
+
+
+            return Path.Combine("images", fileName);
+        }
+
         private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
         {
             var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
@@ -94,27 +115,6 @@ namespace Talpa_Api.Controllers.Api
             }
             
             return (suggestionsWithSimilarity, maxSimilarity);
-        }
-
-        private static async Task<string?> SaveImage(IFormFile image)
-        {
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-            if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension) ||
-                image.Length > 3 * 1024 * 1024)
-            {
-                return null;
-            }
-
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var path     = Path.Combine("wwwroot", "images", fileName);
-
-            await using var stream = new FileStream(path, FileMode.Create);
-
-            await image.CopyToAsync(stream);
-
-
-            return Path.Combine("images", fileName);
         }
 
         private double CalculateSimilarityPercentage(string string1, string string2)
