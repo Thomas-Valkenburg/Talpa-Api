@@ -21,7 +21,7 @@ namespace Talpa_Api.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, int creatorId, IFormFile? image, bool checkSimilarity)
+        public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, int creatorId, IFormFile? image, bool checkSimilarity = true)
         {
             var user = await context.Users.FindAsync(creatorId);
             if (user == null)
