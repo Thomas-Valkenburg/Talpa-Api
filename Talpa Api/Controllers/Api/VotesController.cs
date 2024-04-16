@@ -45,7 +45,7 @@ namespace Talpa_Api.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateVote(int userId, int pollId, int suggestionId)
+        public async Task<ActionResult> CreateVote(string userId, int pollId, int suggestionId)
         {
             var user = context.Users
                 .Include(x => x.Votes)
