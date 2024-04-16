@@ -27,3 +27,10 @@ public class Suggestion
 
     public virtual List<Vote> Votes { get; init; } = [];
 }
+
+public readonly struct SuggestionWithSimilarity(int suggestionId, string title, double similarity)
+{
+    public int SuggestionId { get; init; } = suggestionId;
+    public string Title { get; init; } = title;
+    public double Similarity { get; init; } = similarity;
+}
