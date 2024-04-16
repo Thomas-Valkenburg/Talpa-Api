@@ -20,17 +20,16 @@ public class UsersController(Context context) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostUser(int teamId, string name, bool isManager)
+    public async Task<ActionResult> PostUser(string userId, int teamId)
     {
         var team = await context.Teams.FindAsync(teamId);
             
         if (team == null) return NotFound("Team not found");
-            
+
         team.Users.Add(new User
         {
-            Name      = name,
-            IsManager = isManager,
-            Team      = team
+            Id = userId,
+            Team = team
         });
 
         await context.SaveChangesAsync();
