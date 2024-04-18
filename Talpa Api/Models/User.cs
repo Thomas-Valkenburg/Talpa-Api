@@ -8,7 +8,7 @@ public class User
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    [StringLength(255)]
+    [StringLength(64)]
     public required string Id { get; init; }
 
     public int Points { get; set; } = 0;
