@@ -3,155 +3,154 @@ using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
-namespace Talpa_Api.Controllers.Api
+namespace Talpa_Api.Controllers.Api;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SuggestionsController(Context context) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SuggestionsController(Context context) : ControllerBase
+    private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
+        
+    [HttpGet]
+    public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
     {
-        private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
+        return await context.Suggestions
+            .Include(x => x.Creator)
+            .Include(x => x.Tags)
+            .ToListAsync();
+    }
         
-        [HttpGet]
-        public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
+    [HttpPost]
+    public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool checkSimilarity = true)
+    {
+        var user = await context.Users.FindAsync(creatorId);
+        if (user is null) return NotFound("User not found");
+            
+        var imagePath = "images/default.png";
+
+        if (image != null)
         {
-            return await context.Suggestions
-                .Include(x => x.Creator)
-                .Include(x => x.Tags)
-                .ToListAsync();
+            imagePath = await SaveImage(image);
+
+            if (string.IsNullOrEmpty(imagePath))
+                return BadRequest("Invalid image file.");
         }
-        
-        [HttpPost]
-        public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool checkSimilarity = true)
+            
+            
+        var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
+
+
+        if (checkSimilarity && suggestionsWithSimilarity.Count > 0) 
+            return suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList();
+
+        if (maxSimilarity >= 95)
+            return Conflict("Suggestion is too similar to existing suggestions.");
+            
+            
+        context.Suggestions.Add(new Suggestion
         {
-            var user = await context.Users.FindAsync(creatorId);
-            if (user is null) return NotFound("User not found");
-            
-            var imagePath = "images/default.png";
-
-            if (image != null)
-            {
-                imagePath = await SaveImage(image);
-
-                if (string.IsNullOrEmpty(imagePath))
-                    return BadRequest("Invalid image file.");
-            }
-            
-            
-            var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
-
-
-            if (checkSimilarity && suggestionsWithSimilarity.Count > 0) 
-                return suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList();
-
-            if (maxSimilarity >= 95)
-                return Conflict("Suggestion is too similar to existing suggestions.");
-            
-            
-            context.Suggestions.Add(new Suggestion
-            {
-                Title       = title,
-                Description = description,
-                ImagePath   = imagePath,
-                Creator     = user
-            });
+            Title       = title,
+            Description = description,
+            ImagePath   = imagePath,
+            Creator     = user
+        });
             
 
-            await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-            return Created();
-        }
+        return Created();
+    }
 
-        [HttpPut]
-        public async Task<ActionResult> ChangeSuggestion(int id, string description)
+    [HttpPut]
+    public async Task<ActionResult> ChangeSuggestion(int id, string description)
+    {
+        var suggestion = await context.Suggestions.FindAsync(id);
+
+        if (suggestion is null) return NotFound();
+
+        suggestion.Description = description;
+
+        await context.SaveChangesAsync();
+
+        return Created();
+    }
+
+    private static async Task<string?> SaveImage(IFormFile image)
+    {
+        var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+        if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension) ||
+            image.Length > 3 * 1024 * 1024)
         {
-            var suggestion = await context.Suggestions.FindAsync(id);
-
-            if (suggestion is null) return NotFound();
-
-            suggestion.Description = description;
-
-            await context.SaveChangesAsync();
-
-            return Created();
-        }
-
-        private static async Task<string?> SaveImage(IFormFile image)
-        {
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-            if (string.IsNullOrEmpty(extension) || !AllowedExtensions.Contains(extension) ||
-                image.Length > 3 * 1024 * 1024)
-            {
-                return null;
-            }
-
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var path = Path.Combine("wwwroot", "images", fileName);
-
-            await using var stream = new FileStream(path, FileMode.Create);
-
-            await image.CopyToAsync(stream);
-
-
-            return Path.Combine("images", fileName);
+            return null;
         }
 
-        private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
-        {
-            var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
-            var maxSimilarity = 0.0;
+        var fileName = $"{Guid.NewGuid()}{extension}";
+        var path = Path.Combine("wwwroot", "images", fileName);
+
+        await using var stream = new FileStream(path, FileMode.Create);
+
+        await image.CopyToAsync(stream);
+
+
+        return Path.Combine("images", fileName);
+    }
+
+    private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
+    {
+        var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
+        var maxSimilarity = 0.0;
             
-            foreach (var sug in context.Suggestions)
-            {
-                var sim = CalculateSimilarityPercentage(sug.Title, title);
+        foreach (var sug in context.Suggestions)
+        {
+            var sim = CalculateSimilarityPercentage(sug.Title, title);
                 
-                if (sim > maxSimilarity) maxSimilarity = sim;
+            if (sim > maxSimilarity) maxSimilarity = sim;
                 
-                if (sim > 50) suggestionsWithSimilarity.Add(new SuggestionWithSimilarity(sug.Id, sug.Title, sim));
-            }
-            
-            return (suggestionsWithSimilarity, maxSimilarity);
+            if (sim > 50) suggestionsWithSimilarity.Add(new SuggestionWithSimilarity(sug.Id, sug.Title, sim));
         }
+            
+        return (suggestionsWithSimilarity, maxSimilarity);
+    }
 
-        private double CalculateSimilarityPercentage(string string1, string string2)
+    private double CalculateSimilarityPercentage(string string1, string string2)
+    {
+        var pairs1 = WordLetterPairs(string1.ToUpper());
+        var pairs2 = WordLetterPairs(string2.ToUpper());
+
+        var intersection = 0;
+        var union        = pairs1.Count + pairs2.Count;
+
+        foreach (var pair1 in pairs1)
         {
-            var pairs1 = WordLetterPairs(string1.ToUpper());
-            var pairs2 = WordLetterPairs(string2.ToUpper());
-
-            var intersection = 0;
-            var union        = pairs1.Count + pairs2.Count;
-
-            foreach (var pair1 in pairs1)
+            for (var number = 0; number < pairs2.Count; number++)
             {
-                for (var number = 0; number < pairs2.Count; number++)
-                {
-                    if (pair1 != pairs2[number]) continue;
+                if (pair1 != pairs2[number]) continue;
                     
-                    intersection++;
-                    pairs2.RemoveAt(number);
-                    break;
-                }
+                intersection++;
+                pairs2.RemoveAt(number);
+                break;
             }
-
-            // return the percentage of similarity
-            return 2.0 * intersection * 100 / union;
         }
 
-        // Required for the CalculateSimilarityPercentage method.
-        private List<string> WordLetterPairs(string str)
+        // return the percentage of similarity
+        return 2.0 * intersection * 100 / union;
+    }
+
+    // Required for the CalculateSimilarityPercentage method.
+    private List<string> WordLetterPairs(string str)
+    {
+        var allPairs = new List<string>();
+        var     words    = str.Split(' ');
+
+        foreach (var word in words)
         {
-            var allPairs = new List<string>();
-            var     words    = str.Split(' ');
-
-            foreach (var word in words)
+            for (var number = 0; number < word.Length - 1; number++)
             {
-                for (var number = 0; number < word.Length - 1; number++)
-                {
-                    allPairs.Add(word.Substring(number, 2));
-                }
+                allPairs.Add(word.Substring(number, 2));
             }
-
-            return allPairs;
         }
+
+        return allPairs;
     }
 }
