@@ -1,0 +1,41 @@
+name: Deploy to website on push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4.0.0
+        with: 
+          dotnet-version: '8.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release --no-restore
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ./Release --runtime win-x64
+
+      - name: FTP Deploy
+        if: github.ref == 'refs/heads/main'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ vars.SERVER }}
+          protocol: ftps
+          port: 21
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          local-dir: ./Release/
+          server-dir: /domains/grpi528512.luna.fhict.nl/
+          dangerous-clean-slate: true
