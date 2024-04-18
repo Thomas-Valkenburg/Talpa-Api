@@ -14,7 +14,7 @@ public class UsersController(Context context) : ControllerBase
     {
         var user = await context.Users.FindAsync(id);
 
-        if (user == null) return NotFound("User not found");
+        if (user is null) return NotFound("User not found");
 
         return Ok(user);
     }
@@ -24,7 +24,8 @@ public class UsersController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(teamId);
             
-        if (team == null) return NotFound("Team not found");
+        if (team is null) return NotFound("Team not found");
+        if (await context.Users.FindAsync(userId) is not null) return BadRequest("User already exists");
 
         team.Users.Add(new User
         {
@@ -43,7 +44,7 @@ public class UsersController(Context context) : ControllerBase
     {
         var user = await context.Users.FindAsync(userId);
         
-        if (user == null) return NotFound("User not found");
+        if (user is null) return NotFound("User not found");
 
         context.Users.Remove(user);
 
