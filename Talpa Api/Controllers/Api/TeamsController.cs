@@ -19,26 +19,14 @@ public class TeamsController(Context context) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostTeam(string name)
+    public async Task<ActionResult> PostTeam(string id)
     {
         await context.Teams.AddAsync(new Team
         {
-            Name = name
+            Id = id
         });
 
         await context.SaveChangesAsync();
-
-        return Created();
-    }
-
-    [HttpPut]
-    public async Task<ActionResult> ChangeTeam(int id, string name)
-    {
-        var team = await context.Teams.FindAsync(id);
-
-        if (team == null) return NotFound("Team not found");
-        
-        team.Name = name;
 
         return Created();
     }

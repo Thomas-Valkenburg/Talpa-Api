@@ -20,7 +20,7 @@ public class UsersController(Context context) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostUser(string userId, int teamId)
+    public async Task<ActionResult> PostUser(string userId, string teamId)
     {
         var team = await context.Teams.FindAsync(teamId);
             
