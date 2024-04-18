@@ -30,6 +30,8 @@ public class SuggestionsController(Context context) : ControllerBase
 
         if (image != null)
         {
+            if (image.Length > 3 * 1000000) return StatusCode(413, "Image size is too large"); // Request Entity Too Large / Payload Too Large (image too big).
+
             imagePath = await SaveImage(image);
 
             if (string.IsNullOrEmpty(imagePath))
