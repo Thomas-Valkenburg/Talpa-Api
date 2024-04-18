@@ -24,10 +24,7 @@ namespace Talpa_Api.Controllers.Api
         public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool checkSimilarity = true)
         {
             var user = await context.Users.FindAsync(creatorId);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
+            if (user is null) return NotFound("User not found");
             
             var imagePath = "images/default.png";
 
@@ -47,7 +44,7 @@ namespace Talpa_Api.Controllers.Api
                 return suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList();
 
             if (maxSimilarity >= 95)
-                return BadRequest("Suggestion is too similar to existing suggestions.");
+                return Conflict("Suggestion is too similar to existing suggestions.");
             
             
             context.Suggestions.Add(new Suggestion
@@ -69,7 +66,7 @@ namespace Talpa_Api.Controllers.Api
         {
             var suggestion = await context.Suggestions.FindAsync(id);
 
-            if (suggestion == null) return NotFound();
+            if (suggestion is null) return NotFound();
 
             suggestion.Description = description;
 

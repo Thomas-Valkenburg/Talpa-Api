@@ -13,7 +13,7 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
         
-        if (team == null) return NotFound("Team not found");
+        if (team is null) return NotFound("Team not found");
 
         return Ok(team);
     }
@@ -21,6 +21,8 @@ public class TeamsController(Context context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostTeam(string id)
     {
+        if (await context.Teams.FindAsync(id) is not null) return Conflict("Team already exists");
+        
         await context.Teams.AddAsync(new Team
         {
             Id = id
@@ -36,7 +38,7 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
 
-        if (team == null) return NotFound("Team not found");
+        if (team is null) return NotFound("Team not found");
 
         context.Teams.Remove(team);
         

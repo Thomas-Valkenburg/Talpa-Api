@@ -61,7 +61,7 @@ namespace Talpa_Api.Controllers.Api
             if (poll == null) return NotFound("Poll not found");
             if (suggestion == null) return NotFound("Suggestions not found");
             
-            if (user.Votes.Any(x => x.Poll.Id == pollId)) return BadRequest("User already voted in this poll");
+            if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict("User already voted in this poll");
             
             await context.Votes.AddAsync(new Vote
             {

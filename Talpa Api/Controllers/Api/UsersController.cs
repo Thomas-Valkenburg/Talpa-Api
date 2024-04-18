@@ -25,7 +25,7 @@ public class UsersController(Context context) : ControllerBase
         var team = await context.Teams.FindAsync(teamId);
             
         if (team is null) return NotFound("Team not found");
-        if (await context.Users.FindAsync(userId) is not null) return BadRequest("User already exists");
+        if (await context.Users.FindAsync(userId) is not null) return Conflict("User already exists");
 
         team.Users.Add(new User
         {

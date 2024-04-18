@@ -12,10 +12,7 @@ public class TagsController(Context context) : ControllerBase
     public async Task<ActionResult> CreateTag(string title, bool restrictive, int suggestionId)
     {
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
-        if (suggestion == null)
-        {
-            return NotFound();
-        }
+        if (suggestion is null) return NotFound();
         
         var tag = new Tag
         {
