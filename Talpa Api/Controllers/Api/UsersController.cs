@@ -14,28 +14,27 @@ public class UsersController(Context context) : ControllerBase
     {
         var user = await context.Users.FindAsync(id);
 
-        if (user == null) return NotFound();
+        if (user == null) return NotFound("User not found");
 
-        return user;
+        return Ok(user);
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostUser(int teamId, string name, bool isManager)
+    public async Task<ActionResult> PostUser(string userId, int teamId)
     {
         var team = await context.Teams.FindAsync(teamId);
             
-        if (team == null) return NotFound();
-            
+        if (team == null) return NotFound("Team not found");
+
         team.Users.Add(new User
         {
-            Name      = name,
-            IsManager = isManager,
-            Team      = team
+            Id = userId,
+            Team = team
         });
 
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return Created();
     }
 
     [HttpDelete]
@@ -44,12 +43,12 @@ public class UsersController(Context context) : ControllerBase
     {
         var user = await context.Users.FindAsync(userId);
         
-        if (user == null) return NotFound();
+        if (user == null) return NotFound("User not found");
 
         context.Users.Remove(user);
 
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
     }
 }

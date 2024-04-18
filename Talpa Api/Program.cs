@@ -33,10 +33,11 @@ namespace Talpa_Api
 
             builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false);
             
-            var connection = builder.Configuration.GetConnectionString("ConnectionString");
-
+            var connection = builder.Configuration.GetConnectionString("ConnectionString") 
+                             ?? throw new Exception("Connection string not found.");
+            
             builder.Services.AddDbContext<Context>(options =>
-                options.UseSqlServer(connection, option =>
+                options.UseMySQL(connection, option =>
                 {
                     option.EnableRetryOnFailure(2);
                 })

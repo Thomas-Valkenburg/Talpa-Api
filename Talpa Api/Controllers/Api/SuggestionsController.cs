@@ -10,7 +10,7 @@ namespace Talpa_Api.Controllers.Api
     public class SuggestionsController(Context context) : ControllerBase
     {
         private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
-
+        
         [HttpGet]
         public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
         {
@@ -21,15 +21,15 @@ namespace Talpa_Api.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<ActionResult> CreateSuggestion(string title, string description, int creatorId, IFormFile? image)
+        public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, int creatorId, IFormFile? image, bool checkSimilarity = true)
         {
             var user = await context.Users.FindAsync(creatorId);
-
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found");
             }
 
+            
             var imagePath = "images/default.png";
 
             if (image != null)
@@ -37,11 +37,20 @@ namespace Talpa_Api.Controllers.Api
                 imagePath = await SaveImage(image);
 
                 if (string.IsNullOrEmpty(imagePath))
-                {
                     return BadRequest("Invalid image file.");
-                }
             }
+            
+            
+            var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
 
+
+            if (checkSimilarity && suggestionsWithSimilarity.Count > 0) 
+                return suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList();
+
+            if (maxSimilarity >= 95)
+                return BadRequest("Suggestion is too similar to existing suggestions.");
+            
+            
             context.Suggestions.Add(new Suggestion
             {
                 Title       = title,
@@ -53,7 +62,7 @@ namespace Talpa_Api.Controllers.Api
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Created();
         }
 
         [HttpPut]
@@ -67,7 +76,7 @@ namespace Talpa_Api.Controllers.Api
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Created();
         }
 
         private static async Task<string?> SaveImage(IFormFile image)
@@ -81,7 +90,7 @@ namespace Talpa_Api.Controllers.Api
             }
 
             var fileName = $"{Guid.NewGuid()}{extension}";
-            var path     = Path.Combine("wwwroot", "images", fileName);
+            var path = Path.Combine("wwwroot", "images", fileName);
 
             await using var stream = new FileStream(path, FileMode.Create);
 
@@ -89,6 +98,23 @@ namespace Talpa_Api.Controllers.Api
 
 
             return Path.Combine("images", fileName);
+        }
+
+        private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
+        {
+            var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
+            var maxSimilarity = 0.0;
+            
+            foreach (var sug in context.Suggestions)
+            {
+                var sim = CalculateSimilarityPercentage(sug.Title, title);
+                
+                if (sim > maxSimilarity) maxSimilarity = sim;
+                
+                if (sim > 50) suggestionsWithSimilarity.Add(new SuggestionWithSimilarity(sug.Id, sug.Title, sim));
+            }
+            
+            return (suggestionsWithSimilarity, maxSimilarity);
         }
 
         private double CalculateSimilarityPercentage(string string1, string string2)
