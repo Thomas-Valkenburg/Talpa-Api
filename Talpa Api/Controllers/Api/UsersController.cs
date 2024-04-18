@@ -10,7 +10,7 @@ public class UsersController(Context context) : ControllerBase
 {
     
     [HttpGet]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public async Task<ActionResult<User>> GetUser(string id)
     {
         var user = await context.Users.FindAsync(id);
 
@@ -40,7 +40,7 @@ public class UsersController(Context context) : ControllerBase
 
     [HttpDelete]
 
-    public async Task<ActionResult> DeleteUser(int userId)
+    public async Task<ActionResult> DeleteUser(string userId)
     {
         var user = await context.Users.FindAsync(userId);
         
