@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
@@ -11,7 +12,7 @@ public class TeamsController(Context context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<Team>> GetTeam(string id)
     {
-        var team = await context.Teams.FindAsync(id);
+        var team = context.Teams.Include(team => team.Poll).ThenInclude(poll => poll!.Votes).ToList().Find(team => team.Id == id);
         
         if (team is null) return NotFound("Team not found");
 
