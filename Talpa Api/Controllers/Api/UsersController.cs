@@ -40,7 +40,6 @@ public class UsersController(Context context) : ControllerBase
     }
 
     [HttpDelete]
-
     public async Task<ActionResult> DeleteUser(string userId)
     {
         var user = await context.Users.FindAsync(userId);
@@ -51,6 +50,6 @@ public class UsersController(Context context) : ControllerBase
 
         await context.SaveChangesAsync();
 
-        return Ok();
+        return NoContent();
     }
 }

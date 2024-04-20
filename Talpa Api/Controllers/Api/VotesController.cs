@@ -85,6 +85,6 @@ public class VotesController(Context context) : ControllerBase
 
         await context.SaveChangesAsync();
 
-        return Ok();
+        return NoContent();
     }
 }
