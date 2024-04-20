@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
@@ -12,7 +13,7 @@ public class UsersController(Context context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<User>> GetUser(string id)
     {
-        var user = await context.Users.FindAsync(id);
+        var user = context.Users.Include(user => user.Team).ToList().Find(user => user.Id == id);
 
         if (user is null) return NotFound("User not found");
 
