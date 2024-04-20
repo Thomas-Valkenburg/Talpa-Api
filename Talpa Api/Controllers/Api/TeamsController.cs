@@ -9,7 +9,7 @@ namespace Talpa_Api.Controllers.Api;
 public class TeamsController(Context context) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<Team>> GetTeam(int id)
+    public async Task<ActionResult<Team>> GetTeam(string id)
     {
         var team = await context.Teams.FindAsync(id);
         
@@ -34,7 +34,7 @@ public class TeamsController(Context context) : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteTeam(int id)
+    public async Task<ActionResult> DeleteTeam(string id)
     {
         var team = await context.Teams.FindAsync(id);
 
