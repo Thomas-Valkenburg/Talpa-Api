@@ -16,7 +16,7 @@ public class PollController(Context context) : ControllerBase
 
         if (team is null) 
             return NotFound("Team not found.");
-        if (team.Poll is not null && team.Poll.EndDate <= DateTime.Now) 
+        if (team.Poll is not null && team.Poll.EndDate > DateTime.Now)
             return Conflict("Team already has a poll.");
         if (suggestionIds.Count is < 1 or > 3)
             return BadRequest("Poll must have a minimum of 1 suggestion and a maximum of 3.");
