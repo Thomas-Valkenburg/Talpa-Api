@@ -12,7 +12,14 @@ public class TeamsController(Context context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<Team>> GetTeam(string id)
     {
-        var team = context.Teams.Include(team => team.Poll).ThenInclude(poll => poll!.Votes).ToList().Find(team => team.Id == id);
+        var team = context.Teams
+            .Include(team => team.Users)
+            .Include(team => team.Poll)
+            .ThenInclude(poll => poll!.Suggestions)
+            .Include(team => team.Poll)
+            .ThenInclude(poll => poll!.Votes)
+            .ToList()
+            .Find(team => team.Id == id);
         
         if (team is null) return NotFound("Team not found");
 
