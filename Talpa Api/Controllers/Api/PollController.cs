@@ -12,7 +12,7 @@ public class PollController(Context context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreatePoll(string teamId, DateTime endDate, List<int> suggestionIds)
     {
-        var team = context.Teams.Include(team => team.Poll).ToList().Find(x => x.Id == teamId);
+        var team = context.Teams.Include(team => team.Users).Include(team => team.Poll).ToList().Find(x => x.Id == teamId);
 
         if (team is null) 
             return NotFound("Team not found.");
