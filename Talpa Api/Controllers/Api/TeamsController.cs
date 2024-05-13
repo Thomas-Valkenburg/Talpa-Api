@@ -52,6 +52,6 @@ public class TeamsController(Context context) : ControllerBase
         
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
     }
 }

@@ -55,10 +55,9 @@ public class SuggestionsController(Context context) : ControllerBase
             ImagePath   = imagePath,
             Creator     = user
         });
-            
-
+        
         await context.SaveChangesAsync();
-
+        
         return Created();
     }
 
@@ -72,7 +71,7 @@ public class SuggestionsController(Context context) : ControllerBase
         suggestion.Description = description;
 
         await context.SaveChangesAsync();
-
+        
         return Created();
     }
 

@@ -37,10 +37,6 @@ public class VotesController(Context context) : ControllerBase
         }
 
         return Ok(new VotesWithCount
-        {
-            Votes = votes,
-            VotesPerSuggestion = votesPerSuggestion
-        });
     }
 
     [HttpPost]
@@ -53,7 +49,6 @@ public class VotesController(Context context) : ControllerBase
             .Find(x => x.Id == userId);
             
         var poll = await context.Polls.FindAsync(pollId);
-            
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
             
         if (user       == null) return NotFound("User not found");
@@ -70,7 +65,6 @@ public class VotesController(Context context) : ControllerBase
         });
             
         await context.SaveChangesAsync();
-
         return Created();
     }
 
@@ -78,13 +72,11 @@ public class VotesController(Context context) : ControllerBase
     public async Task<ActionResult> DeleteVote(int voteId)
     {
         var vote = await context.Votes.FindAsync(voteId);
-        
         if (vote == null) return NotFound("Vote not found");
             
         context.Votes.Remove(vote);
 
         await context.SaveChangesAsync();
-
         return NoContent();
     }
 }

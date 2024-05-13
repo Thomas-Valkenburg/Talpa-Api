@@ -32,7 +32,6 @@ public static class Program
         });
 
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false);
-            
         var connection = builder.Configuration.GetConnectionString("ConnectionString") 
                          ?? throw new Exception("Connection string not found.");
             
