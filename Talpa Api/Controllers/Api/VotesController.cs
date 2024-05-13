@@ -37,6 +37,10 @@ public class VotesController(Context context) : ControllerBase
         }
 
         return Ok(new VotesWithCount
+        {
+            Votes = votes,
+            VotesPerSuggestion = votesPerSuggestion
+        });
     }
 
     [HttpPost]
