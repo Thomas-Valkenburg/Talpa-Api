@@ -10,7 +10,7 @@ public class Poll
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
 
-    public required DateOnly EndDate { get; init; }
+    public required DateTime EndDate { get; init; }
 
     public virtual required Team Team { get; init; }
 

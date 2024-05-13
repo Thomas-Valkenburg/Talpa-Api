@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Talpa_Api.Contexts;
 using Talpa_Api.Models;
 
@@ -10,21 +11,22 @@ public class UsersController(Context context) : ControllerBase
 {
     
     [HttpGet]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public async Task<ActionResult<User>> GetUser(string id)
     {
-        var user = await context.Users.FindAsync(id);
+        var user = context.Users.Include(user => user.Team).ToList().Find(user => user.Id == id);
 
-        if (user == null) return NotFound("User not found");
+        if (user is null) return NotFound("User not found");
 
         return Ok(user);
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostUser(string userId, int teamId)
+    public async Task<ActionResult> PostUser(string userId, string teamId)
     {
         var team = await context.Teams.FindAsync(teamId);
             
-        if (team == null) return NotFound("Team not found");
+        if (team is null) return NotFound("Team not found");
+        if (await context.Users.FindAsync(userId) is not null) return Conflict("User already exists");
 
         team.Users.Add(new User
         {
@@ -38,12 +40,11 @@ public class UsersController(Context context) : ControllerBase
     }
 
     [HttpDelete]
-
-    public async Task<ActionResult> DeleteUser(int userId)
+    public async Task<ActionResult> DeleteUser(string userId)
     {
         var user = await context.Users.FindAsync(userId);
         
-        if (user == null) return NotFound("User not found");
+        if (user is null) return NotFound("User not found");
 
         context.Users.Remove(user);
 
