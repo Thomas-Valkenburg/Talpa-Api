@@ -3,28 +3,25 @@ using Talpa_Api.Models;
 
 namespace Talpa_Api.Contexts;
 
-public class Context : DbContext
+public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
-    public Context(DbContextOptions<Context> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
+	public DbSet<Team> Teams { get; init; }
 
-    public virtual DbSet<Team> Teams { get; init; }
+    public DbSet<User> Users { get; init; }
 
-    public virtual DbSet<User> Users { get; init; }
+    public DbSet<Suggestion> Suggestions { get; init; }
 
-    public virtual DbSet<Suggestion> Suggestions { get; init; }
+    public DbSet<Tag> Tags { get; init; }
 
-    public virtual DbSet<Tag> Tags { get; init; }
+    public DbSet<Poll> Polls { get; init; }
 
-    public virtual DbSet<Poll> Polls { get; init; }
+    public DbSet<PollDate> PollDates { get; init; }
 
-    public virtual DbSet<Vote> Votes { get; init; }
+    public DbSet<Vote> Votes { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Suggestion>()
+		modelBuilder.Entity<Suggestion>()
             .HasMany(s => s.Tags)
             .WithMany(t => t.Suggestions);
 

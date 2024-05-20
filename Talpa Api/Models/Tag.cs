@@ -15,5 +15,5 @@ public class Tag
 
     public required bool Restrictive { get; init; }
 
-    public virtual List<Suggestion> Suggestions { get; init; } = [];
+    public List<Suggestion> Suggestions { get; init; } = [];
 }

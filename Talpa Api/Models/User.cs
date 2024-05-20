@@ -13,9 +13,9 @@ public class User
 
     public int Points { get; set; } = 0;
     
-    public virtual required Team Team { get; init; }
+    public required Team Team { get; init; }
 
-    public virtual List<Vote> Votes { get; init; } = [];
+    public List<Vote> Votes { get; init; } = [];
 
-    public virtual List<Suggestion> Suggestions { get; init; } = [];
+    public List<Suggestion> Suggestions { get; init; } = [];
 }
