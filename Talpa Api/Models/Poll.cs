@@ -31,9 +31,9 @@ public class Poll
 
     public List<PollDate> Dates { get; init; }
 
-    public virtual Team Team { get; init; }
+    public Team Team { get; init; }
 
-    public virtual List<Suggestion> Suggestions { get; init; } = [];
+    public List<Suggestion> Suggestions { get; init; } = [];
 
-    public virtual List<Vote> Votes { get; init; } = [];
+    public List<Vote> Votes { get; init; } = [];
 }

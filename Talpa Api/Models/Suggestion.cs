@@ -19,13 +19,13 @@ public class Suggestion
     [StringLength(255)] 
     public required string ImagePath { get; set; }
 
-    public virtual required User? Creator { get; init; }
+    public required User? Creator { get; init; }
 
-    public virtual List<Tag> Tags { get; init; } = [];
+    public List<Tag> Tags { get; init; } = [];
     
-    public virtual List<Poll> Polls { get; init; } = [];
+    public List<Poll> Polls { get; init; } = [];
 
-    public virtual List<Vote> Votes { get; init; } = [];
+    public List<Vote> Votes { get; init; } = [];
 }
 
 public readonly struct SuggestionWithSimilarity(int suggestionId, string title, double similarity)

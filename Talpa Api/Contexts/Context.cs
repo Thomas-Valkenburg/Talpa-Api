@@ -5,24 +5,19 @@ namespace Talpa_Api.Contexts;
 
 public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
-	public virtual DbSet<Team> Teams { get; init; }
+	public DbSet<Team> Teams { get; init; }
 
-    public virtual DbSet<User> Users { get; init; }
+    public DbSet<User> Users { get; init; }
 
-    public virtual DbSet<Suggestion> Suggestions { get; init; }
+    public DbSet<Suggestion> Suggestions { get; init; }
 
-    public virtual DbSet<Tag> Tags { get; init; }
+    public DbSet<Tag> Tags { get; init; }
 
-    public virtual DbSet<Poll> Polls { get; init; }
+    public DbSet<Poll> Polls { get; init; }
 
-    public virtual DbSet<PollDate> PollDates { get; init; }
+    public DbSet<PollDate> PollDates { get; init; }
 
-    public virtual DbSet<Vote> Votes { get; init; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-		Database.Migrate();
-	}
+    public DbSet<Vote> Votes { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
