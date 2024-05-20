@@ -44,7 +44,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
         var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
 
         if (maxSimilarity >= 90)
-            return Conflict(localizer["SuggestionTooSimilar"]);
+            return Conflict(localizer["SuggestionTooSimilar"].Value);
 
         if (!overrideSimilarity && suggestionsWithSimilarity.Count > 0 && maxSimilarity > 70) 
             return Accepted(suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList());
@@ -68,7 +68,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     {
         var suggestion = await context.Suggestions.FindAsync(id);
 
-        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"]);
+        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
 
         suggestion.Description = description;
 

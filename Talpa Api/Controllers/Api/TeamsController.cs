@@ -12,7 +12,7 @@ namespace Talpa_Api.Controllers.Api;
 public class TeamsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<Team>> GetTeam(string id)
+    public ActionResult<Team> GetTeam(string id)
     {
         var team = context.Teams
             .Include(team => team.Users)
@@ -21,9 +21,9 @@ public class TeamsController(Context context, IStringLocalizer<LocalizationStrin
             .Include(team => team.Poll)
             .ThenInclude(poll => poll!.Votes)
             .ToList()
-            .Find(team => team.Id == id);
+			.Find(team => team.Id == id);
         
-        if (team is null) return NotFound(localizer["TeamNotFound"]);
+        if (team is null) return NotFound(localizer["TeamNotFound"].Value);
 
         return Ok(team);
     }
@@ -31,7 +31,7 @@ public class TeamsController(Context context, IStringLocalizer<LocalizationStrin
     [HttpPost]
     public async Task<ActionResult> PostTeam(string id)
     {
-        if (await context.Teams.FindAsync(id) is not null) return Conflict(localizer["TeamAlreadyExists"]);
+        if (await context.Teams.FindAsync(id) is not null) return Conflict(localizer["TeamAlreadyExists"].Value);
         
         await context.Teams.AddAsync(new Team
         {
@@ -48,7 +48,7 @@ public class TeamsController(Context context, IStringLocalizer<LocalizationStrin
     {
         var team = await context.Teams.FindAsync(id);
 
-        if (team is null) return NotFound(localizer["TeamNotFound"]);
+        if (team is null) return NotFound(localizer["TeamNotFound"].Value);
 
         context.Teams.Remove(team);
         
