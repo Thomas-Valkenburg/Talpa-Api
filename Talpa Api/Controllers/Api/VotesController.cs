@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Talpa_Api.Contexts;
+using Talpa_Api.Localization;
 using Talpa_Api.Models;
 
 namespace Talpa_Api.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VotesController(Context context) : ControllerBase
+public class VotesController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
         
     [HttpGet]
@@ -21,7 +23,7 @@ public class VotesController(Context context) : ControllerBase
             .ThenInclude(x => x.Suggestion)
             .ToListAsync();
 
-        if (polls.Count < 1) return NotFound("poll not found");
+        if (polls.Count < 1) return NotFound(localizer["PollNotFound"]);
 
         var votes = polls.First().Votes;
 
@@ -55,11 +57,11 @@ public class VotesController(Context context) : ControllerBase
         var poll = await context.Polls.FindAsync(pollId);
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
             
-        if (user       == null) return NotFound("User not found");
-        if (poll       == null) return NotFound("Poll not found");
-        if (suggestion == null) return NotFound("Suggestions not found");
+        if (user       == null) return NotFound(localizer["UserNotFound"]);
+        if (poll       == null) return NotFound(localizer["PollNotFound"]);
+        if (suggestion == null) return NotFound(localizer["SuggestionNotFound"]);
             
-        if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict("User already voted in this poll");
+        if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict(localizer["UserAlreadyVoted"]);
             
         await context.Votes.AddAsync(new Vote
         {
@@ -76,7 +78,7 @@ public class VotesController(Context context) : ControllerBase
     public async Task<ActionResult> DeleteVote(int voteId)
     {
         var vote = await context.Votes.FindAsync(voteId);
-        if (vote == null) return NotFound("Vote not found");
+        if (vote == null) return NotFound(localizer["VoteNotFound"]);
             
         context.Votes.Remove(vote);
 

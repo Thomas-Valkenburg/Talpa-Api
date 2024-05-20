@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Talpa_Api.Contexts;
+using Talpa_Api.Localization;
 using Talpa_Api.Models;
 
 namespace Talpa_Api.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TeamsController(Context context) : ControllerBase
+public class TeamsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<Team>> GetTeam(string id)
@@ -21,7 +23,7 @@ public class TeamsController(Context context) : ControllerBase
             .ToList()
             .Find(team => team.Id == id);
         
-        if (team is null) return NotFound("Team not found");
+        if (team is null) return NotFound(localizer["TeamNotFound"]);
 
         return Ok(team);
     }
@@ -29,7 +31,7 @@ public class TeamsController(Context context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostTeam(string id)
     {
-        if (await context.Teams.FindAsync(id) is not null) return Conflict("Team already exists");
+        if (await context.Teams.FindAsync(id) is not null) return Conflict(localizer["TeamAlreadyExists"]);
         
         await context.Teams.AddAsync(new Team
         {
@@ -46,7 +48,7 @@ public class TeamsController(Context context) : ControllerBase
     {
         var team = await context.Teams.FindAsync(id);
 
-        if (team is null) return NotFound("Team not found");
+        if (team is null) return NotFound(localizer["TeamNotFound"]);
 
         context.Teams.Remove(team);
         
