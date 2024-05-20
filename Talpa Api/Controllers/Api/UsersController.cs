@@ -13,11 +13,11 @@ public class UsersController(Context context, IStringLocalizer<LocalizationStrin
 {
     
     [HttpGet]
-    public async Task<ActionResult<User>> GetUser(string id)
+    public ActionResult<User> GetUser(string id)
     {
         var user = context.Users.Include(user => user.Team).ToList().Find(user => user.Id == id);
 
-        if (user is null) return NotFound(localizer["UserNotFound"]);
+        if (user is null) return NotFound(localizer["UserNotFound"].Value);
 
         return Ok(user);
     }
@@ -27,8 +27,8 @@ public class UsersController(Context context, IStringLocalizer<LocalizationStrin
     {
         var team = await context.Teams.FindAsync(teamId);
             
-        if (team is null) return NotFound(localizer["TeamNotFound"]);
-        if (await context.Users.FindAsync(userId) is not null) return Conflict(localizer["UserAlreadyExists"]);
+        if (team is null) return NotFound(localizer["TeamNotFound"].Value);
+        if (await context.Users.FindAsync(userId) is not null) return Conflict(localizer["UserAlreadyExists"].Value);
 
         team.Users.Add(new User
         {
@@ -46,7 +46,7 @@ public class UsersController(Context context, IStringLocalizer<LocalizationStrin
     {
         var user = await context.Users.FindAsync(userId);
         
-        if (user is null) return NotFound(localizer["UserNotFound"]);
+        if (user is null) return NotFound(localizer["UserNotFound"].Value);
 
         context.Users.Remove(user);
 

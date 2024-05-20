@@ -23,7 +23,7 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
             .ThenInclude(x => x.Suggestion)
             .ToListAsync();
 
-        if (polls.Count < 1) return NotFound(localizer["PollNotFound"]);
+        if (polls.Count < 1) return NotFound(localizer["PollNotFound"].Value);
 
         var votes = polls.First().Votes;
 
@@ -57,11 +57,11 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
         var poll = await context.Polls.FindAsync(pollId);
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
             
-        if (user       == null) return NotFound(localizer["UserNotFound"]);
-        if (poll       == null) return NotFound(localizer["PollNotFound"]);
-        if (suggestion == null) return NotFound(localizer["SuggestionNotFound"]);
+        if (user       is null) return NotFound(localizer["UserNotFound"].Value);
+        if (poll       is null) return NotFound(localizer["PollNotFound"].Value);
+        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
             
-        if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict(localizer["UserAlreadyVoted"]);
+        if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict(localizer["UserAlreadyVoted"].Value);
             
         await context.Votes.AddAsync(new Vote
         {
@@ -78,7 +78,7 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
     public async Task<ActionResult> DeleteVote(int voteId)
     {
         var vote = await context.Votes.FindAsync(voteId);
-        if (vote == null) return NotFound(localizer["VoteNotFound"]);
+        if (vote is null) return NotFound(localizer["VoteNotFound"].Value);
             
         context.Votes.Remove(vote);
 

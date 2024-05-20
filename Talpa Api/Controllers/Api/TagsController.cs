@@ -14,7 +14,7 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
     public async Task<ActionResult> CreateTag(string title, bool restrictive, int suggestionId)
     {
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
-        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"]);
+        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
         
         var tag = new Tag
         {
