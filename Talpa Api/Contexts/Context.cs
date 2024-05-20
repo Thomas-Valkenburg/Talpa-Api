@@ -3,14 +3,9 @@ using Talpa_Api.Models;
 
 namespace Talpa_Api.Contexts;
 
-public class Context : DbContext
+public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
-    public Context(DbContextOptions<Context> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
-
-    public virtual DbSet<Team> Teams { get; init; }
+	public virtual DbSet<Team> Teams { get; init; }
 
     public virtual DbSet<User> Users { get; init; }
 
@@ -20,11 +15,18 @@ public class Context : DbContext
 
     public virtual DbSet<Poll> Polls { get; init; }
 
+    public virtual DbSet<PollDate> PollDates { get; init; }
+
     public virtual DbSet<Vote> Votes { get; init; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+		Database.Migrate();
+	}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Suggestion>()
+		modelBuilder.Entity<Suggestion>()
             .HasMany(s => s.Tags)
             .WithMany(t => t.Suggestions);
 
