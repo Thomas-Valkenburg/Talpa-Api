@@ -9,11 +9,11 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class PollController(Context context) : ControllerBase
 {
-	public struct PollData
+	public readonly struct PollData
 	{
-		public List<DateTime> Dates { get; set; }
+		public List<DateTime> Dates { get; init; }
 
-		public List<int> SuggestionsIds { get; set; }
+		public List<int> SuggestionsIds { get; init; }
 	}
 
 	[HttpPost]
@@ -21,10 +21,12 @@ public class PollController(Context context) : ControllerBase
     {
         var team = context.Teams.Include(team => team.Poll).ToList().Find(x => x.Id == teamId);
 
-        if (team is null) 
+        if (team is null)
             return NotFound("Team not found.");
         if (team.Poll is not null && team.Poll.EndDate > DateTime.Now)
             return Conflict("Team already has an active poll.");
+        if (data.Dates.Count < 1)
+	        return BadRequest("Dates must contain at least one date.");
         if (data.SuggestionsIds.Count is < 1 or > 3)
             return BadRequest("Poll must have a minimum of 1 suggestion and a maximum of 3.");
         if (data.SuggestionsIds.Any(id => context.Suggestions.Find(id) is null))
