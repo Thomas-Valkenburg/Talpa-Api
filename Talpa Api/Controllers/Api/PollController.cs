@@ -9,8 +9,15 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class PollController(Context context) : ControllerBase
 {
-    [HttpPost]
-    public async Task<ActionResult> CreatePoll(string teamId, DateTime endDate, List<int> suggestionIds)
+	public struct PollData
+	{
+		public List<DateTime> Dates { get; set; }
+
+		public List<int> SuggestionsIds { get; set; }
+	}
+
+	[HttpPost]
+    public async Task<ActionResult> CreatePoll(string teamId, DateTime endDate, [FromBody] PollData data)
     {
         var team = context.Teams.Include(team => team.Poll).ToList().Find(x => x.Id == teamId);
 
@@ -18,17 +25,12 @@ public class PollController(Context context) : ControllerBase
             return NotFound("Team not found.");
         if (team.Poll is not null && team.Poll.EndDate > DateTime.Now)
             return Conflict("Team already has an active poll.");
-        if (suggestionIds.Count is < 1 or > 3)
+        if (data.SuggestionsIds.Count is < 1 or > 3)
             return BadRequest("Poll must have a minimum of 1 suggestion and a maximum of 3.");
-        if (suggestionIds.Any(id => context.Suggestions.Find(id) is null))
+        if (data.SuggestionsIds.Any(id => context.Suggestions.Find(id) is null))
             return NotFound("One or more suggestions not found.");
 
-        team.Poll = new Poll
-        {
-            EndDate     = endDate,
-            Suggestions = suggestionIds.Select(id => context.Suggestions.Find(id)).ToList()!,
-            Team        = team
-        };
+        team.Poll = new Poll(endDate, data.Dates, data.SuggestionsIds.Select(id => context.Suggestions.Find(id)).ToList()!, team);
 
         await context.SaveChangesAsync();
 
