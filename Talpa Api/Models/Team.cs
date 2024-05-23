@@ -11,8 +11,8 @@ public class Team
     [StringLength(64)]
     public required string Id { get; init; }
 
-    public virtual Poll? Poll { get; set; }
+    public Poll? Poll { get; set; }
 
-    public virtual List<User> Users { get; init; } = [];
+    public List<User> Users { get; init; } = [];
 
 }

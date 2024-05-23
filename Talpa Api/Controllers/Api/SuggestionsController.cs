@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Talpa_Api.Contexts;
+using Talpa_Api.Localization;
 using Talpa_Api.Models;
 
 namespace Talpa_Api.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SuggestionsController(Context context) : ControllerBase
+public class SuggestionsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
         
@@ -24,25 +26,25 @@ public class SuggestionsController(Context context) : ControllerBase
     public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool overrideSimilarity = false)
     {
         var user = await context.Users.FindAsync(creatorId);
-        if (user is null) return NotFound("User not found");
+        if (user is null) return NotFound(localizer["UserNotFound"].Value);
             
         var imagePath = "images/default.png";
 
         if (image != null)
         {
-            if (image.Length > 3 * 1000000) return StatusCode(413, "Image size is too large"); // Request Entity Too Large / Payload Too Large (image too big).
+            if (image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
 
             imagePath = await SaveImage(image);
 
             if (string.IsNullOrEmpty(imagePath))
-                return BadRequest("Invalid image file.");
+                return BadRequest(localizer["ImageInvalid"].Value);
         }
             
             
         var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
 
         if (maxSimilarity >= 90)
-            return Conflict("Suggestion is too similar to existing suggestions.");
+            return Conflict(localizer["SuggestionTooSimilar"].Value);
 
         if (!overrideSimilarity && suggestionsWithSimilarity.Count > 0 && maxSimilarity > 70) 
             return Accepted(suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList());
@@ -66,7 +68,7 @@ public class SuggestionsController(Context context) : ControllerBase
     {
         var suggestion = await context.Suggestions.FindAsync(id);
 
-        if (suggestion is null) return NotFound();
+        if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
 
         suggestion.Description = description;
 

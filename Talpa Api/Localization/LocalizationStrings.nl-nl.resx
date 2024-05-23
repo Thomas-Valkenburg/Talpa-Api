@@ -1,0 +1,56 @@
+﻿<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="TeamNotFound" xml:space="preserve">
+		<value>Team niet gevonden.</value>
+	</data>
+	<data name="TeamAlreadyActivePoll" xml:space="preserve">
+		<value>Team heeft al een actieve poll.</value>
+	</data>
+	<data name="CreatePollDateCountWrong" xml:space="preserve">
+		<value>Datums moet ten minste één datum bevatten.</value>
+	</data>
+	<data name="CreatePollSuggestionCountWrong" xml:space="preserve">
+		<value>Poll moet ten minste 1 en maximaal 3 suggesties bevatten.</value>
+	</data>
+	<data name="ImageTooLarge" xml:space="preserve">
+		<value>Bestand is te groot.</value>
+	</data>
+	<data name="ImageInvalid" xml:space="preserve">
+		<value>Ongeldig bestand.</value>
+	</data>
+	<data name="SuggestionTooSimilar" xml:space="preserve">
+		<value>Suggestie is te veel hetzelfde als een bestaande suggestie.</value>
+	</data>
+	<data name="SuggestionNotFound" xml:space="preserve">
+		<value>Suggestie niet gevonden.</value>
+	</data>
+	<data name="UserNotFound" xml:space="preserve">
+		<value>Gebruiker niet gevonden.</value>
+	</data>
+	<data name="TeamAlreadyExists" xml:space="preserve">
+		<value>Team bestaat al.</value>
+	</data>
+	<data name="UserAlreadyExists" xml:space="preserve">
+		<value>Gebruiker bestaat al.</value>
+	</data>
+	<data name="PollNotFound" xml:space="preserve">
+		<value>Poll niet gevonden.</value>
+	</data>
+	<data name="UserAlreadyVoted" xml:space="preserve">
+		<value>Gebruiker heeft al gestemd in deze poll.</value>
+	</data>
+	<data name="VoteNotFound" xml:space="preserve">
+		<value>Stem niet gevonden.</value>
+	</data>
+</root>
