@@ -97,6 +97,15 @@ namespace Talpa_Api.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Poll has ended..
+        /// </summary>
+        public static string PollHasEnded {
+            get {
+                return ResourceManager.GetString("PollHasEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Poll not found..
         /// </summary>
         public static string PollNotFound {

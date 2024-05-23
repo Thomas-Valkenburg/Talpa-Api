@@ -64,6 +64,7 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
         if (user       is null) return NotFound(localizer["UserNotFound"].Value);
         if (poll       is null) return NotFound(localizer["PollNotFound"].Value);
         if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
+        if (poll.HasEnded) return Conflict(localizer["PollHasEnded"].Value);
             
         if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict(localizer["UserAlreadyVoted"].Value);
             
