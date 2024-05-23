@@ -53,7 +53,11 @@ public class VotesController(Context context) : ControllerBase
             .Find(x => x.Id == userId);
             
         var poll = await context.Polls.FindAsync(pollId);
-        var suggestion = await context.Suggestions.FindAsync(suggestionId);
+
+        var suggestion = context.Suggestions
+	        .Include(suggestion => suggestion.Creator)
+	        .ToList()
+	        .Find(x => x.Id == suggestionId);
             
         if (user       == null) return NotFound("User not found");
         if (poll       == null) return NotFound("Poll not found");
@@ -67,6 +71,8 @@ public class VotesController(Context context) : ControllerBase
             Poll = poll,
             Suggestion = suggestion
         });
+
+        if (suggestion.Creator is not null) suggestion.Creator.Points += 1;
             
         await context.SaveChangesAsync();
         return Created();
