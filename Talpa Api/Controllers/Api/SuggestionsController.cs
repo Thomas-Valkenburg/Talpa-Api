@@ -17,8 +17,8 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
     {
         return await context.Suggestions
-            .Include(x => x.Creator)
-            .Include(x => x.Tags)
+            .Include(suggestion => suggestion.Creator)
+            .Include(suggestion => suggestion.Tags)
             .ToListAsync();
     }
         
