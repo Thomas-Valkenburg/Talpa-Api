@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Talpa_Api.Contexts;
+using Talpa_Api.Events;
 using Talpa_Api.Localization;
 using Talpa_Api.Models;
 
@@ -25,7 +26,7 @@ public class PollController(Context context, IStringLocalizer<LocalizationString
 
         if (team is null)
             return NotFound(localizer["TeamNotFound"].Value);
-        if (team.Poll is not null && team.Poll.EndDate > DateTime.Now)
+        if (team.Poll is not null && !team.Poll.HasEnded)
             return Conflict(localizer["TeamAlreadyActivePoll"].Value);
         if (data.Dates.Count < 1)
 	        return BadRequest(localizer["CreatePollDateCountWrong"].Value);
@@ -38,6 +39,40 @@ public class PollController(Context context, IStringLocalizer<LocalizationString
 
         await context.SaveChangesAsync();
 
-        return Created();
+        PollEndTimer.CreateTimer(team.Poll);
+
+		return Created();
     }
+
+	[NonAction]
+    public static void AssignPoints(int pollId)
+    {
+	    var scope = Program.Application.Services.CreateScope();
+	    var context = scope.ServiceProvider.GetRequiredService<Context>();
+
+		var poll = context.Polls
+			.Include(poll => poll.Suggestions)
+			.ThenInclude(suggestion => suggestion.Creator)
+			.Include(poll => poll.Suggestions)
+			.ThenInclude(suggestion => suggestion.Votes)
+			.ToList()
+			.Find(x => x.Id == pollId);
+
+		if (poll is null || poll.HasPointsAssigned || poll.Suggestions.Count < 1) return;
+
+		var winningSuggestion = poll.Suggestions.MaxBy(x => x.Votes.Count(vote => poll.Id == vote.Poll.Id));
+
+		if (winningSuggestion?.Creator is null || winningSuggestion.Votes.All(vote => poll.Id != vote.Poll.Id))
+		{
+			poll.HasPointsAssigned = true;
+			context.SaveChanges();
+			return;
+		}
+
+		winningSuggestion.Creator.Points += 10;
+
+		poll.HasPointsAssigned = true;
+
+		context.SaveChanges();
+	}
 }
