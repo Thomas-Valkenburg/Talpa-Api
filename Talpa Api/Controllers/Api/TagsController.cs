@@ -15,6 +15,8 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
     {
         var suggestion = await context.Suggestions.FindAsync(suggestionId);
         if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
+
+        if (context.Tags.Any(t => t.Title == title)) return Conflict(localizer["TagAlreadyExists"].Value);
         
         var tag = new Tag
         {
