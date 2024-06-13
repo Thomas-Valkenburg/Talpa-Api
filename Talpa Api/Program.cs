@@ -1,14 +1,18 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
 using System.Globalization;
 using System.Text.Json.Serialization;
 using Talpa_Api.Contexts;
+using Talpa_Api.Events;
 
 namespace Talpa_Api;
 
 public static class Program
 {
+	public static WebApplication Application = null!;
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -64,14 +68,7 @@ public static class Program
 
         var app = builder.Build();
 
-        // Migrate Database to latest version
-        using (var scope = app.Services.CreateScope())
-        {
-	        var context = scope.ServiceProvider.GetRequiredService<Context>();
-	        context.Database.Migrate();
-        }
-
-		// Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline.
 		if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -93,6 +90,26 @@ public static class Program
 
         app.MapControllers();
 
+        Application = app;
+
+        try
+        {
+	        // Migrate Database to latest version
+	        using var scope = app.Services.CreateScope();
+
+	        var context = scope.ServiceProvider.GetRequiredService<Context>();
+	        context.Database.Migrate();
+
+	        foreach (var poll in context.Polls.Where(poll => !poll.HasPointsAssigned))
+	        {
+		        PollEndTimer.CreateTimer(poll);
+	        }
+        }
+        catch (MySqlException ex)
+        {
+	        Console.WriteLine(ex);
+        }
+
         app.Run();
-    }
+	}
 }

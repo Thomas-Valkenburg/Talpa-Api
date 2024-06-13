@@ -55,11 +55,16 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
             .Find(x => x.Id == userId);
             
         var poll = await context.Polls.FindAsync(pollId);
-        var suggestion = await context.Suggestions.FindAsync(suggestionId);
+
+        var suggestion = context.Suggestions
+	        .Include(suggestion => suggestion.Creator)
+	        .ToList()
+	        .Find(x => x.Id == suggestionId);
             
         if (user       is null) return NotFound(localizer["UserNotFound"].Value);
         if (poll       is null) return NotFound(localizer["PollNotFound"].Value);
         if (suggestion is null) return NotFound(localizer["SuggestionNotFound"].Value);
+        if (poll.HasEnded) return Conflict(localizer["PollHasEnded"].Value);
             
         if (user.Votes.Any(x => x.Poll.Id == pollId)) return Conflict(localizer["UserAlreadyVoted"].Value);
             
@@ -69,6 +74,8 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
             Poll = poll,
             Suggestion = suggestion
         });
+
+        if (suggestion.Creator is not null) suggestion.Creator.Points += 1;
             
         await context.SaveChangesAsync();
         return Created();

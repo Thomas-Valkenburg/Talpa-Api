@@ -29,6 +29,10 @@ public class Poll
 
     public DateTime EndDate { get; init; }
 
+	public bool HasEnded => DateTime.UtcNow > EndDate;
+
+	public bool HasPointsAssigned { get; set; }
+
     public List<PollDate> Dates { get; init; }
 
     public Team Team { get; init; }

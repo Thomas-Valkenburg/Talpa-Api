@@ -159,4 +159,7 @@
   <data name="VoteNotFound" xml:space="preserve">
 	  <value>Vote not found.</value>
   </data>
+  <data name="PollHasEnded" xml:space="preserve">
+	  <value>Poll has ended.</value>
+  </data>
 </root>

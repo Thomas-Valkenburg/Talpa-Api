@@ -53,4 +53,7 @@
 	<data name="VoteNotFound" xml:space="preserve">
 		<value>Stem niet gevonden.</value>
 	</data>
+	<data name="PollHasEnded" xml:space="preserve">
+		<value>Poll is gesloten.</value>
+	</data>
 </root>
