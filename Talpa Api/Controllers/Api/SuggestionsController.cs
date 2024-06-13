@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 using Talpa_Api.Contexts;
 using Talpa_Api.Localization;
 using Talpa_Api.Models;
+using Talpa_Api.Algorithms;
 
 namespace Talpa_Api.Controllers.Api;
 
@@ -12,7 +13,7 @@ namespace Talpa_Api.Controllers.Api;
 public class SuggestionsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
-        
+
     [HttpGet]
     public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
     {
@@ -23,7 +24,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     }
         
     [HttpPost]
-    public async Task<ActionResult<List<SuggestionWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool overrideSimilarity = false)
+    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool overrideSimilarity = false)
     {
         var user = await context.Users.FindAsync(creatorId);
         if (user is null) return NotFound(localizer["UserNotFound"].Value);
@@ -40,26 +41,24 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
                 return BadRequest(localizer["ImageInvalid"].Value);
         }
             
-            
-        var (suggestionsWithSimilarity, maxSimilarity) = GetSuggestionsWithSimilarity(title);
+        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context.Suggestions);
 
-        if (maxSimilarity >= 90)
+        if (similarity.max >= 90)
             return Conflict(localizer["SuggestionTooSimilar"].Value);
 
-        if (!overrideSimilarity && suggestionsWithSimilarity.Count > 0 && maxSimilarity > 70) 
-            return Accepted(suggestionsWithSimilarity.OrderByDescending(x => x.Similarity).ToList());
-            
-            
+        if (!overrideSimilarity && similarity.objects.Count > 0 && similarity.max > 70)
+            return Accepted(similarity.objects.OrderByDescending(x => x.Similarity).ToList());
+
         context.Suggestions.Add(new Suggestion
         {
-            Title       = title,
+            Title = title,
             Description = description,
-            ImagePath   = imagePath,
-            Creator     = user
+            ImagePath = imagePath,
+            Creator = user
         });
-        
+
         await context.SaveChangesAsync();
-        
+
         return Created();
     }
 
@@ -73,7 +72,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
         suggestion.Description = description;
 
         await context.SaveChangesAsync();
-        
+
         return Created();
     }
 
@@ -94,65 +93,6 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
 
         await image.CopyToAsync(stream);
 
-
         return Path.Combine("images", fileName);
-    }
-
-    private (List<SuggestionWithSimilarity>, double) GetSuggestionsWithSimilarity(string title)
-    {
-        var suggestionsWithSimilarity = new List<SuggestionWithSimilarity>();
-        var maxSimilarity = 0.0;
-            
-        foreach (var sug in context.Suggestions)
-        {
-            var sim = CalculateSimilarityPercentage(sug.Title, title);
-                
-            if (sim > maxSimilarity) maxSimilarity = sim;
-                
-            if (sim > 50) suggestionsWithSimilarity.Add(new SuggestionWithSimilarity(sug.Id, sug.Title, sim));
-        }
-            
-        return (suggestionsWithSimilarity, maxSimilarity);
-    }
-
-    private double CalculateSimilarityPercentage(string string1, string string2)
-    {
-        var pairs1 = WordLetterPairs(string1.ToUpper());
-        var pairs2 = WordLetterPairs(string2.ToUpper());
-
-        var intersection = 0;
-        var union        = pairs1.Count + pairs2.Count;
-
-        foreach (var pair1 in pairs1)
-        {
-            for (var number = 0; number < pairs2.Count; number++)
-            {
-                if (pair1 != pairs2[number]) continue;
-                    
-                intersection++;
-                pairs2.RemoveAt(number);
-                break;
-            }
-        }
-
-        // return the percentage of similarity
-        return 2.0 * intersection * 100 / union;
-    }
-
-    // Required for the CalculateSimilarityPercentage method.
-    private List<string> WordLetterPairs(string str)
-    {
-        var allPairs = new List<string>();
-        var     words    = str.Split(' ');
-
-        foreach (var word in words)
-        {
-            for (var number = 0; number < word.Length - 1; number++)
-            {
-                allPairs.Add(word.Substring(number, 2));
-            }
-        }
-
-        return allPairs;
     }
 }
