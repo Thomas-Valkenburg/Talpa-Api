@@ -26,14 +26,14 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
 	}
 
 	[HttpPost]
-    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
+    public async Task<ActionResult<dynamic>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
-        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
+        var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
 
-        if (similarity.max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
+        if (max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
 
-        if (similarity.objects.Count > 0 && similarity.max > 70 && !overrideSimilarity)
-            return Accepted(similarity.objects.OrderByDescending(x => x.Similarity).ToList());
+        if (objects.Count > 0 && max > 70 && !overrideSimilarity)
+            return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
         
         var tag = new Tag
         {
@@ -45,6 +45,6 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
         await context.Tags.AddAsync(tag);
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return tag;
     }
 }

@@ -12,6 +12,12 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class SuggestionsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
+	public class SuggestionData
+	{
+		public List<int>  tags { get; set; }
+		public IFormFile? image { get; set; }
+	}
+
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
     [HttpGet]
@@ -24,35 +30,35 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     }
         
     [HttpPost]
-    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, List<int> tagIds, IFormFile? image, bool overrideSimilarity = false)
+    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, [FromForm] SuggestionData data, bool overrideSimilarity = false)
     {
         var user = await context.Users.FindAsync(creatorId);
         if (user is null) return NotFound(localizer["UserNotFound"].Value);
             
         var imagePath = "images/default.png";
 
-        if (image != null)
+        if (data.image != null)
         {
-            if (image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
+            if (data.image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
 
-            imagePath = await SaveImage(image);
+            imagePath = await SaveImage(data.image);
 
             if (string.IsNullOrEmpty(imagePath))
                 return BadRequest(localizer["ImageInvalid"].Value);
         }
             
-        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context.Suggestions);
+        var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Suggestions);
 
-        if (similarity.max >= 90)
+        if (max >= 90)
             return Conflict(localizer["SuggestionTooSimilar"].Value);
 
-        if (!overrideSimilarity && similarity.objects.Count > 0 && similarity.max > 70)
-            return Accepted(similarity.objects.OrderByDescending(x => x.Similarity).ToList());
+        if (!overrideSimilarity && objects.Count > 0 && max > 70)
+            return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
 
-        if (tagIds.Any(tag => context.Tags.Find(tag) is null))
+        if (data.tags.Any(tag => context.Tags.Find(tag) is null))
             return NotFound(localizer["TagNotFound"].Value);
 
-        var tags = await context.Tags.Where(tag => tagIds.Contains(tag.Id)).ToListAsync();
+        var tags = await context.Tags.Where(tag => data.tags.Contains(tag.Id)).ToListAsync();
 
         context.Suggestions.Add(new Suggestion
         {
