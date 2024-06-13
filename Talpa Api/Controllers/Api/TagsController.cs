@@ -14,7 +14,7 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
     [HttpPost]
     public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
-        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context);
+        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
 
         if (similarity.max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
 
