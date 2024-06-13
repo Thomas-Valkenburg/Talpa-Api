@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Talpa_Api.Algorithms;
 using Talpa_Api.Contexts;
@@ -11,6 +12,12 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class TagsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<List<Tag>>> GetTags()
+	{
+		return await context.Tags.ToListAsync();
+	}
+
     [HttpPost]
     public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
