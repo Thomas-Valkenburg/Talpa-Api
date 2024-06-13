@@ -16,11 +16,12 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
 	[HttpGet]
 	public async Task<ActionResult<List<Tag>>> GetTags(string? search = "")
 	{
-        if (string.IsNullOrWhiteSpace(search)) return await context.Tags.ToListAsync();
+        if (string.IsNullOrWhiteSpace(search)) return await context.Tags.Take(10).ToListAsync();
 
         return context.Tags
 	        .Where(x => x.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || 
 	                    search.Contains(x.Title, StringComparison.InvariantCultureIgnoreCase))
+	        .Take(10)
 	        .ToList();
 	}
 
