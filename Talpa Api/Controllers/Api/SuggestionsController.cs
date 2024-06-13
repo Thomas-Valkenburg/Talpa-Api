@@ -24,7 +24,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     }
         
     [HttpPost]
-    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, IFormFile? image, bool overrideSimilarity = false)
+    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, List<int> tagIds, IFormFile? image, bool overrideSimilarity = false)
     {
         var user = await context.Users.FindAsync(creatorId);
         if (user is null) return NotFound(localizer["UserNotFound"].Value);
@@ -49,12 +49,18 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
         if (!overrideSimilarity && similarity.objects.Count > 0 && similarity.max > 70)
             return Accepted(similarity.objects.OrderByDescending(x => x.Similarity).ToList());
 
+        if (tagIds.Any(tag => context.Tags.Find(tag) is null))
+            return NotFound(localizer["TagNotFound"].Value);
+
+        var tags = await context.Tags.Where(tag => tagIds.Contains(tag.Id)).ToListAsync();
+
         context.Suggestions.Add(new Suggestion
         {
             Title = title,
             Description = description,
             ImagePath = imagePath,
-            Creator = user
+            Creator = user,
+            Tags = tags
         });
 
         await context.SaveChangesAsync();
