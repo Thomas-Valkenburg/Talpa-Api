@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Talpa_Api.Algorithms;
@@ -12,13 +13,18 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class TagsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<List<Tag>>> GetTags()
+	[HttpGet]
+	public async Task<ActionResult<List<Tag>>> GetTags(string? search = "")
 	{
-		return await context.Tags.ToListAsync();
+        if (string.IsNullOrWhiteSpace(search)) return await context.Tags.ToListAsync();
+
+        return context.Tags
+	        .Where(x => x.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || 
+	                    search.Contains(x.Title, StringComparison.InvariantCultureIgnoreCase))
+	        .ToList();
 	}
 
-    [HttpPost]
+	[HttpPost]
     public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
         var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
