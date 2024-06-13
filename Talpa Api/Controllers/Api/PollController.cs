@@ -16,7 +16,7 @@ public class PollController(Context context, IStringLocalizer<LocalizationString
 	{
 		public List<DateTime> Dates { get; init; }
 
-		public List<int> SuggestionsIds { get; init; }
+		public List<int> SuggestionIds { get; init; }
 	}
 
 	[HttpPost]
@@ -30,12 +30,12 @@ public class PollController(Context context, IStringLocalizer<LocalizationString
             return Conflict(localizer["TeamAlreadyActivePoll"].Value);
         if (data.Dates.Count < 1)
 	        return BadRequest(localizer["CreatePollDateCountWrong"].Value);
-        if (data.SuggestionsIds.Count is < 1 or > 3)
+        if (data.SuggestionIds.Count is < 1 or > 3)
             return BadRequest(localizer["CreatePollSuggestionCountWrong"].Value);
-        if (data.SuggestionsIds.Any(id => context.Suggestions.Find(id) is null))
+        if (data.SuggestionIds.Any(id => context.Suggestions.Find(id) is null))
             return NotFound(localizer["SuggestionNotFound"].Value);
 
-        team.Poll = new Poll(endDate, data.Dates, data.SuggestionsIds.Select(id => context.Suggestions.Find(id)).ToList()!, team);
+        team.Poll = new Poll(endDate, data.Dates, data.SuggestionIds.Select(id => context.Suggestions.Find(id)).ToList()!, team);
 
         await context.SaveChangesAsync();
 
