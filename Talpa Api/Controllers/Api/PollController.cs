@@ -35,7 +35,7 @@ public class PollController(Context context, IStringLocalizer<LocalizationString
         if (data.SuggestionIds.Any(id => context.Suggestions.Find(id) is null))
             return NotFound(localizer["SuggestionNotFound"].Value);
 
-        team.Poll = new Poll(endDate, data.Dates, data.SuggestionIds.Select(id => context.Suggestions.Find(id)).ToList()!, team);
+        team.Poll = new Poll(endDate.ToUniversalTime(), data.Dates, data.SuggestionIds.Select(id => context.Suggestions.Find(id)).ToList()!, team);
 
         await context.SaveChangesAsync();
 
