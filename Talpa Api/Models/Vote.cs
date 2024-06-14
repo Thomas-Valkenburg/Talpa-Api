@@ -15,6 +15,8 @@ public class Vote
     public required Suggestion Suggestion { get; set; }
 
     public required Poll Poll { get; init; }
+
+    public required List<PollDate> Dates { get; init; }
 }
 
 public struct VotesWithCount
