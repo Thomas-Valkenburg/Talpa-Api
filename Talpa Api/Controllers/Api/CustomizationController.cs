@@ -29,10 +29,20 @@ public class CustomizationController(Context context) : ControllerBase
 				return BadRequest();
 			}
 
-			var path = Path.Combine("wwwroot", "images", "logo." + Path.GetExtension(image.FileName));
-			var stream = new FileStream(path, FileMode.Create);
+			var path = Path.Combine("wwwroot", "logo", image.FileName);
 
-			image.CopyTo(stream);
+			try
+			{
+				if (!Directory.Exists(Path.Combine("wwwroot", "logo"))) Directory.CreateDirectory(Path.Combine("wwwroot", "logo"));
+
+				var stream = new FileStream(path, FileMode.Create);
+
+				image.CopyTo(stream);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(503, "Image write unavailable: " + ex);
+			}
 		}
 
 		if (currentCustomization is null)
