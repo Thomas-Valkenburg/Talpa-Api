@@ -11,13 +11,13 @@ public class CustomizationController(Context context) : ControllerBase
 	private readonly List<string> AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
 	[HttpGet]
-	public IActionResult GetCustomization()
+	public ActionResult<Customization?> GetCustomization()
 	{
 		return Ok(context.Customization.FirstOrDefault());
 	}
 
 	[HttpPost]
-	public IActionResult UpdateCustomization(string? name, bool? gradient, string? color1, string? color2, string? color3,
+	public ActionResult UpdateCustomization(string? name, bool? gradient, string? color1, string? color2, string? color3,
 		IFormFile? image)
 	{
 		var currentCustomization = context.Customization.FirstOrDefault();
