@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Localization;
-using Talpa_Api.Contexts;
-using Talpa_Api.Controllers.Api;
-using Talpa_Api.Localization;
+﻿using Talpa_Api.Controllers.Api;
 using Talpa_Api.Models;
 using Timer = System.Timers.Timer;
 

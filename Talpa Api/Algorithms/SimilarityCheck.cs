@@ -1,8 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Talpa_Api.Models;
-using Talpa_Api.Contexts;
-
 namespace Talpa_Api.Algorithms
 {
     public abstract class SimilarityCheck
