@@ -13,5 +13,5 @@ public class PollDate
 
 	public required Poll Poll { get; init; }
 
-	public List<Vote> Votes { get; set; } = [];
+	public List<Vote>? Votes { get; set; } = [];
 }
