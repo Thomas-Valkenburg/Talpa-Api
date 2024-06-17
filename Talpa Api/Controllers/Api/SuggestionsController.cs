@@ -79,7 +79,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
             if (string.IsNullOrEmpty(imagePath))
                 return BadRequest(localizer["ImageInvalid"].Value);
         }
-            
+        
         var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Suggestions);
 
         if (max >= 90)
@@ -105,7 +105,6 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
             ImagePath = imagePath,
             Creator = user,
             Tags = tags
-        });
 
         await context.SaveChangesAsync();
 
