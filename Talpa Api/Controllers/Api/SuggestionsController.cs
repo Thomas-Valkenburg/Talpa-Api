@@ -14,7 +14,7 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
 {
 	public class SuggestionData
 	{
-		public List<int>  Tags { get; set; }
+		public List<int>?  Tags { get; set; }
 		public IFormFile? Image { get; set; }
 	}
 
@@ -55,10 +55,15 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
         if (!overrideSimilarity && objects.Count > 0 && max > 70)
             return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
 
-        if (data.Tags.Any(tag => context.Tags.Find(tag) is null))
-            return NotFound(localizer["TagNotFound"].Value);
+        List<Tag> tags = [];
 
-        var tags = await context.Tags.Where(tag => data.Tags.Contains(tag.Id)).ToListAsync();
+        if (data.Tags is not null)
+        {
+	        if (data.Tags.Any(tag => context.Tags.Find(tag) is null))
+		        return NotFound(localizer["TagNotFound"].Value);
+
+	        tags = await context.Tags.Where(tag => data.Tags.Contains(tag.Id)).ToListAsync();
+        }
 
         context.Suggestions.Add(new Suggestion
         {
