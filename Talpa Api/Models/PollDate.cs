@@ -12,4 +12,6 @@ public class PollDate
 	public required DateTime Date { get; init; }
 
 	public required Poll Poll { get; init; }
+
+	public List<Vote> Votes { get; set; } = [];
 }
