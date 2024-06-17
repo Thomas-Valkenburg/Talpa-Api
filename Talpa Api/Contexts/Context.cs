@@ -34,5 +34,13 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
             .WithOne(p => p.Team)
             .HasForeignKey<Poll>()
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Poll>()
+			.HasMany(p => p.Dates)
+			.WithOne(d => d.Poll);
+
+        modelBuilder.Entity<Vote>()
+	        .HasMany(v => v.Dates)
+	        .WithMany(d => d.Votes);
     }
 }
