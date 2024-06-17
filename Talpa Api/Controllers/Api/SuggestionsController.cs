@@ -100,11 +100,12 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
 
         context.Suggestions.Add(new Suggestion
         {
-            Title = title,
-            Description = description,
-            ImagePath = imagePath,
-            Creator = user,
-            Tags = tags
+	        Title       = title,
+	        Description = description,
+	        ImagePath   = imagePath,
+	        Creator     = user,
+	        Tags        = tags
+        });
 
         await context.SaveChangesAsync();
 
