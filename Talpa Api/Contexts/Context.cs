@@ -44,8 +44,5 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<Vote>()
 	        .HasMany(v => v.Dates)
 	        .WithMany(d => d.Votes);
-
-        modelBuilder.Entity<Customization>()
-	        .HasNoKey();
     }
 }

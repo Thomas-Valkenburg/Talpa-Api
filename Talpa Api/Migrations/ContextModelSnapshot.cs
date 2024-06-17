@@ -79,7 +79,15 @@ namespace Talpa_Api.Migrations
                     b.Property<bool>("Gradient")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<string>("LogoPath")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.ToTable("Customization");

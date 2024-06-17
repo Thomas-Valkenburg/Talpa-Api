@@ -17,7 +17,7 @@ public class CustomizationController(Context context) : ControllerBase
 	}
 
 	[HttpPost]
-	public IActionResult UpdateCustomization(bool? gradient, string? color1, string? color2, string? color3,
+	public IActionResult UpdateCustomization(string? name, bool? gradient, string? color1, string? color2, string? color3,
 		IFormFile? image)
 	{
 		var currentCustomization = context.Customization.FirstOrDefault();
@@ -43,10 +43,17 @@ public class CustomizationController(Context context) : ControllerBase
 				return BadRequest();
 			}
 
-			var customization = new Customization(gradient!.Value, color1, color2, color3, image.FileName);
+			var customization = new Customization(name ?? "Talpa", gradient!.Value, color1, color2, color3, Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName));
 
 			context.Customization.Add(customization);
+			context.SaveChanges();
+
 			return Created();
+		}
+
+		if (name is not null)
+		{
+			currentCustomization.Name = name;
 		}
 
 		if (gradient is not null)
@@ -67,6 +74,11 @@ public class CustomizationController(Context context) : ControllerBase
 		if (color3 is not null)
 		{
 			currentCustomization.Color3 = color3;
+		}
+
+		if (image is not null)
+		{
+			currentCustomization.LogoPath = Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName);
 		}
 
 		context.Customization.Update(currentCustomization);

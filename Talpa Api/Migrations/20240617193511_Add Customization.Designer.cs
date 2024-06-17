@@ -11,8 +11,8 @@ using Talpa_Api.Contexts;
 namespace Talpa_Api.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240617135045_Customization")]
-    partial class Customization
+    [Migration("20240617193511_Add Customization")]
+    partial class AddCustomization
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,7 +82,15 @@ namespace Talpa_Api.Migrations
                     b.Property<bool>("Gradient")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<string>("LogoPath")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.ToTable("Customization");
