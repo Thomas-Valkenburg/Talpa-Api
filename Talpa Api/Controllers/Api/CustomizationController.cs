@@ -39,9 +39,9 @@ public class CustomizationController(Context context) : ControllerBase
 
 				image.CopyTo(stream);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				return StatusCode(503, "Image write unavailable: " + ex);
+				return StatusCode(503, "Image write unavailable");
 			}
 		}
 
