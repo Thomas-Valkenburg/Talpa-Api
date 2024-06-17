@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Talpa_Api.Contexts;
 
@@ -10,9 +11,11 @@ using Talpa_Api.Contexts;
 namespace Talpa_Api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240617111023_update many to many")]
+    partial class updatemanytomany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,35 +65,6 @@ namespace Talpa_Api.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("SuggestionTag");
-                });
-
-            modelBuilder.Entity("Talpa_Api.Models.Customization", b =>
-                {
-                    b.Property<string>("Color1")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Color2")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Color3")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Gradient")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.ToTable("Customization");
                 });
 
             modelBuilder.Entity("Talpa_Api.Models.Poll", b =>

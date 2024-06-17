@@ -133,6 +133,24 @@ namespace Talpa_Api.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tag already exists..
+        /// </summary>
+        public static string TagAlreadyExists {
+            get {
+                return ResourceManager.GetString("TagAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag not found..
+        /// </summary>
+        public static string TagNotFound {
+            get {
+                return ResourceManager.GetString("TagNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Team already has an active poll..
         /// </summary>
         public static string TeamAlreadyActivePoll {

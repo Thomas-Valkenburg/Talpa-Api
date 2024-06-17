@@ -46,7 +46,7 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateVote(string userId, int pollId, int suggestionId)
+    public async Task<ActionResult> CreateVote(string userId, int pollId, int suggestionId, List<int> pollDates)
     {
         var user = context.Users
             .Include(x => x.Votes)
@@ -60,6 +60,10 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
 	        .Include(suggestion => suggestion.Creator)
 	        .ToList()
 	        .Find(x => x.Id == suggestionId);
+
+        var dates = context.PollDates
+			.Where(x => pollDates.Contains(x.Id))
+			.ToList();
             
         if (user       is null) return NotFound(localizer["UserNotFound"].Value);
         if (poll       is null) return NotFound(localizer["PollNotFound"].Value);
@@ -72,7 +76,8 @@ public class VotesController(Context context, IStringLocalizer<LocalizationStrin
         {
             Creator = user,
             Poll = poll,
-            Suggestion = suggestion
+            Suggestion = suggestion,
+            Dates = dates
         });
 
         if (suggestion.Creator is not null) suggestion.Creator.Points += 1;

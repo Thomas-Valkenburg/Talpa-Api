@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Talpa_Api.Contexts;
 
@@ -10,29 +11,16 @@ using Talpa_Api.Contexts;
 namespace Talpa_Api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240614134519_Add Dates to Vote")]
+    partial class AddDatestoVote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("PollDateVote", b =>
-                {
-                    b.Property<int>("DatesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VotesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DatesId", "VotesId");
-
-                    b.HasIndex("VotesId");
-
-                    b.ToTable("PollDateVote");
-                });
 
             modelBuilder.Entity("PollSuggestion", b =>
                 {
@@ -62,35 +50,6 @@ namespace Talpa_Api.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("SuggestionTag");
-                });
-
-            modelBuilder.Entity("Talpa_Api.Models.Customization", b =>
-                {
-                    b.Property<string>("Color1")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Color2")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Color3")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Gradient")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.ToTable("Customization");
                 });
 
             modelBuilder.Entity("Talpa_Api.Models.Poll", b =>
@@ -128,9 +87,14 @@ namespace Talpa_Api.Migrations
                     b.Property<int>("PollId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VoteId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PollId");
+
+                    b.HasIndex("VoteId");
 
                     b.ToTable("PollDates");
                 });
@@ -243,21 +207,6 @@ namespace Talpa_Api.Migrations
                     b.ToTable("Vote");
                 });
 
-            modelBuilder.Entity("PollDateVote", b =>
-                {
-                    b.HasOne("Talpa_Api.Models.PollDate", null)
-                        .WithMany()
-                        .HasForeignKey("DatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Talpa_Api.Models.Vote", null)
-                        .WithMany()
-                        .HasForeignKey("VotesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PollSuggestion", b =>
                 {
                     b.HasOne("Talpa_Api.Models.Poll", null)
@@ -305,6 +254,10 @@ namespace Talpa_Api.Migrations
                         .HasForeignKey("PollId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Talpa_Api.Models.Vote", null)
+                        .WithMany("Dates")
+                        .HasForeignKey("VoteId");
 
                     b.Navigation("Poll");
                 });
@@ -380,6 +333,11 @@ namespace Talpa_Api.Migrations
                     b.Navigation("Suggestions");
 
                     b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("Talpa_Api.Models.Vote", b =>
+                {
+                    b.Navigation("Dates");
                 });
 #pragma warning restore 612, 618
         }

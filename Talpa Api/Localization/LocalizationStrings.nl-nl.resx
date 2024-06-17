@@ -56,4 +56,10 @@
 	<data name="PollHasEnded" xml:space="preserve">
 		<value>Poll is gesloten.</value>
 	</data>
+	<data name="TagNotFound" xml:space="preserve">
+		<value>Tag niet gevonden.</value>
+	</data>
+	<data name="TagAlreadyExists" xml:space="preserve">
+		<value>Tag bestaat al.</value>
+	</data>
 </root>

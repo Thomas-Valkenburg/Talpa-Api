@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Talpa_Api.Algorithms;
 using Talpa_Api.Contexts;
@@ -11,15 +12,27 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class TagsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
-    [HttpPost]
-    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
+	[HttpGet]
+	public async Task<ActionResult<List<Tag>>> GetTags(string? search = "")
+	{
+        if (string.IsNullOrWhiteSpace(search)) return await context.Tags.Take(10).ToListAsync();
+
+        return context.Tags
+	        .Where(x => x.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase) || 
+	                    search.Contains(x.Title, StringComparison.InvariantCultureIgnoreCase))
+	        .Take(10)
+	        .ToList();
+	}
+
+	[HttpPost]
+    public async Task<ActionResult<dynamic>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
-        var similarity = SimilarityCheck.GetObjectWithSimilarity(title, context);
+        var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
+        
+        if (context.Tags.Any(tag => string.Equals(tag.Title, title, StringComparison.InvariantCultureIgnoreCase)) || max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
 
-        if (similarity.max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
-
-        if (similarity.objects.Count > 0 && similarity.max > 70 && !overrideSimilarity)
-            return Accepted(similarity.objects.OrderByDescending(x => x.Similarity).ToList());
+        if (objects.Count > 0 && max > 70 && !overrideSimilarity)
+            return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
         
         var tag = new Tag
         {
@@ -31,6 +44,6 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
         await context.Tags.AddAsync(tag);
         await context.SaveChangesAsync();
 
-        return NoContent();
+        return tag;
     }
 }

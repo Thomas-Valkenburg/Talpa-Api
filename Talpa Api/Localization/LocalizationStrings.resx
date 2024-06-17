@@ -162,4 +162,10 @@
   <data name="PollHasEnded" xml:space="preserve">
 	  <value>Poll has ended.</value>
   </data>
+  <data name="TagNotFound" xml:space="preserve">
+	  <value>Tag not found.</value>
+  </data>
+  <data name="TagAlreadyExists" xml:space="preserve">
+	  <value>Tag already exists.</value>
+  </data>
 </root>
