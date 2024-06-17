@@ -12,7 +12,38 @@ namespace Talpa_Api.Controllers.Api;
 [ApiController]
 public class SuggestionsController(Context context, IStringLocalizer<LocalizationStrings> localizer) : ControllerBase
 {
-	public class SuggestionData
+	public class SuggestionData(Suggestion suggestion)
+	{
+		public int Id { get; } = suggestion.Id;
+
+        public string Title { get; } = suggestion.Title;
+
+        public string Description { get; } = suggestion.Description;
+
+        public string ImagePath { get; } = suggestion.ImagePath;
+
+        public SuggestionCreatorData? Creator { get; } = suggestion.Creator is null ? null : new SuggestionCreatorData(suggestion.Creator);
+
+        public List<SuggestionTagData> Tags { get; } = suggestion.Tags.Select(tag => new SuggestionTagData(tag)).ToList();
+
+        public class SuggestionCreatorData(User user)
+        {
+            public string Id { get; } = user.Id;
+
+            public int Points { get; } = user.Points;
+        }
+
+        public class SuggestionTagData(Tag tag)
+		{
+			public int Id { get; } = tag.Id;
+
+			public string Title { get; } = tag.Title;
+
+			public bool Restrictive { get; } = tag.Restrictive;
+		}
+	}
+
+	public class SuggestionFormData
 	{
 		public List<int>?  Tags { get; set; }
 		public IFormFile? Image { get; set; }
@@ -21,27 +52,29 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
     [HttpGet]
-    public async Task<ActionResult<List<Suggestion>>> GetSuggestions()
+    public async Task<ActionResult<List<SuggestionData>>> GetSuggestions()
     {
-        return await context.Suggestions
-            .Include(suggestion => suggestion.Creator)
-            .Include(suggestion => suggestion.Tags)
-            .ToListAsync();
+        var suggestions = await context.Suggestions
+			.Include(suggestion => suggestion.Creator)
+			.Include(suggestion => suggestion.Tags)
+			.ToListAsync();
+
+        return Ok(suggestions.Select(suggestion => new SuggestionData(suggestion)));
     }
         
     [HttpPost]
-    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, [FromForm] SuggestionData data, bool overrideSimilarity = false)
+    public async Task<ActionResult<List<SimilarityCheck.ObjectWithSimilarity>>> CreateSuggestion(string title, string description, string creatorId, [FromForm] SuggestionFormData formData, bool overrideSimilarity = false)
     {
         var user = await context.Users.FindAsync(creatorId);
         if (user is null) return NotFound(localizer["UserNotFound"].Value);
             
         var imagePath = "images/default.png";
 
-        if (data.Image != null)
+        if (formData.Image != null)
         {
-            if (data.Image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
+            if (formData.Image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
 
-            imagePath = await SaveImage(data.Image);
+            imagePath = await SaveImage(formData.Image);
 
             if (string.IsNullOrEmpty(imagePath))
                 return BadRequest(localizer["ImageInvalid"].Value);
@@ -57,12 +90,12 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
 
         List<Tag> tags = [];
 
-        if (data.Tags is not null)
+        if (formData.Tags is not null)
         {
-	        if (data.Tags.Any(tag => context.Tags.Find(tag) is null))
+	        if (formData.Tags.Any(tag => context.Tags.Find(tag) is null))
 		        return NotFound(localizer["TagNotFound"].Value);
 
-	        tags = await context.Tags.Where(tag => data.Tags.Contains(tag.Id)).ToListAsync();
+	        tags = await context.Tags.Where(tag => formData.Tags.Contains(tag.Id)).ToListAsync();
         }
 
         context.Suggestions.Add(new Suggestion
