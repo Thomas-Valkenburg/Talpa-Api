@@ -28,8 +28,8 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
     public async Task<ActionResult<dynamic>> CreateTag(string title, bool restrictive, bool overrideSimilarity = false)
     {
         var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
-
-        if (max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
+        
+        if (context.Tags.Any(tag => tag.Title == title) || max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
 
         if (objects.Count > 0 && max > 70 && !overrideSimilarity)
             return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
