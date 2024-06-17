@@ -29,7 +29,7 @@ public class CustomizationController(Context context) : ControllerBase
 				return BadRequest();
 			}
 
-			var path = Path.Combine("wwwroot", "logo", image.FileName);
+			var path = Path.Combine("wwwroot", "logo", image.FileName.Replace(' ', '_'));
 
 			try
 			{
@@ -53,7 +53,7 @@ public class CustomizationController(Context context) : ControllerBase
 				return BadRequest();
 			}
 
-			var customization = new Customization(name ?? "Talpa", gradient!.Value, color1, color2, color3, Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName));
+			var customization = new Customization(name ?? "Talpa", gradient!.Value, color1, color2, color3, Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName.Replace(' ', '_')));
 
 			context.Customization.Add(customization);
 			context.SaveChanges();
@@ -88,7 +88,7 @@ public class CustomizationController(Context context) : ControllerBase
 
 		if (image is not null)
 		{
-			currentCustomization.LogoPath = Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName);
+			currentCustomization.LogoPath = Path.Combine(HttpContext.Request.Host.Value, "logo", image.FileName.Replace(' ', '_'));
 		}
 
 		context.Customization.Update(currentCustomization);
