@@ -14,8 +14,8 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
 {
 	public class SuggestionData
 	{
-		public List<int>  tags { get; set; }
-		public IFormFile? image { get; set; }
+		public List<int>  Tags { get; set; }
+		public IFormFile? Image { get; set; }
 	}
 
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
@@ -37,11 +37,11 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
             
         var imagePath = "images/default.png";
 
-        if (data.image != null)
+        if (data.Image != null)
         {
-            if (data.image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
+            if (data.Image.Length > 3 * 1000000) return StatusCode(413, localizer["ImageTooLarge"].Value); // Request Entity Too Large / Payload Too Large (image too big).
 
-            imagePath = await SaveImage(data.image);
+            imagePath = await SaveImage(data.Image);
 
             if (string.IsNullOrEmpty(imagePath))
                 return BadRequest(localizer["ImageInvalid"].Value);
@@ -55,10 +55,10 @@ public class SuggestionsController(Context context, IStringLocalizer<Localizatio
         if (!overrideSimilarity && objects.Count > 0 && max > 70)
             return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
 
-        if (data.tags.Any(tag => context.Tags.Find(tag) is null))
+        if (data.Tags.Any(tag => context.Tags.Find(tag) is null))
             return NotFound(localizer["TagNotFound"].Value);
 
-        var tags = await context.Tags.Where(tag => data.tags.Contains(tag.Id)).ToListAsync();
+        var tags = await context.Tags.Where(tag => data.Tags.Contains(tag.Id)).ToListAsync();
 
         context.Suggestions.Add(new Suggestion
         {
