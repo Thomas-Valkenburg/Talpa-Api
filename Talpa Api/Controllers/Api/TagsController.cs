@@ -29,7 +29,7 @@ public class TagsController(Context context, IStringLocalizer<LocalizationString
     {
         var (objects, max) = SimilarityCheck.GetObjectWithSimilarity(title, context.Tags);
         
-        if (context.Tags.Any(tag => tag.Title == title) || max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
+        if (context.Tags.Any(tag => string.Equals(tag.Title, title, StringComparison.InvariantCultureIgnoreCase)) || max >= 90) return Conflict(localizer["TagAlreadyExists"].Value);
 
         if (objects.Count > 0 && max > 70 && !overrideSimilarity)
             return Accepted(objects.OrderByDescending(x => x.Similarity).ToList());
