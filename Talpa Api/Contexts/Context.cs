@@ -19,6 +19,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
 
     public DbSet<Vote> Votes { get; init; }
 
+    public DbSet<Customization> Customization { get; init; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 		modelBuilder.Entity<Suggestion>()
@@ -42,5 +44,8 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<Vote>()
 	        .HasMany(v => v.Dates)
 	        .WithMany(d => d.Votes);
+
+        modelBuilder.Entity<Customization>()
+	        .HasNoKey();
     }
 }
